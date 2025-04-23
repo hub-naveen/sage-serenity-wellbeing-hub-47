@@ -24,9 +24,28 @@ export default {
 				ring: 'hsl(var(--ring))',
 				background: 'hsl(var(--background))',
 				foreground: 'hsl(var(--foreground))',
+				
+				// Sage Serenity Brand Colors
+				sage: {
+					DEFAULT: '#B2AC88', // Primary background
+					light: '#c8c4a9',
+					dark: '#8c8768',
+					foreground: '#ffffff',
+				},
+				forest: {
+					DEFAULT: '#4D5D53', // Accent (Buttons/Headings)
+					light: '#657369',
+					dark: '#3a453e',
+					foreground: '#ffffff',
+				},
+				cream: '#FFF3E0', // Complementary
+				lilac: '#F8D2F9', // Complementary
+				
 				primary: {
-					DEFAULT: 'hsl(var(--primary))',
-					foreground: 'hsl(var(--primary-foreground))'
+					DEFAULT: '#4D5D53', // Using forest as primary
+					light: '#657369',
+					dark: '#3a453e',
+					foreground: '#ffffff'
 				},
 				secondary: {
 					DEFAULT: 'hsl(var(--secondary))',

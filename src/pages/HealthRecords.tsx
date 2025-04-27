@@ -1,46 +1,38 @@
-
 import { useState } from "react";
 import Layout from "@/components/layout/Layout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
+  Search, 
   FileText, 
-  FilePlus, 
-  Pill, 
-  Stethoscope, 
-  Syringe, 
-  Flask, 
-  Heart, 
-  HeartPulse,
-  Calendar,
-  Download,
-  Share,
-  Search,
-  Upload,
-  Clock,
-  AlertCircle
+  Calendar, 
+  AlertCircle, 
+  Download, 
+  Share2,
+  FlaskConical,
+  Activity,
+  Info
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 const HealthRecords = () => {
+  const [activeTab, setActiveTab] = useState("medical");
   const { toast } = useToast();
-  const [activeTab, setActiveTab] = useState("summary");
-
-  const handleUpload = () => {
+  
+  const downloadReport = () => {
     toast({
-      title: "File uploaded",
-      description: "Your health record has been uploaded successfully."
+      title: "Report Downloaded",
+      description: "Your health report has been downloaded."
     });
   };
-
-  const handleShare = () => {
+  
+  const shareReport = () => {
     toast({
-      title: "Records shared",
-      description: "Your records have been shared with Dr. Johnson."
+      title: "Report Shared",
+      description: "Your report has been shared with Dr. Johnson."
     });
   };
 
@@ -50,379 +42,177 @@ const HealthRecords = () => {
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-3xl font-bold text-forest">Health Records</h1>
           <div className="flex space-x-2">
-            <Button variant="outline">
+            <Button variant="outline" onClick={downloadReport}>
               <Download className="mr-2 h-4 w-4" />
               Export
             </Button>
-            <Button variant="outline" onClick={handleShare}>
-              <Share className="mr-2 h-4 w-4" />
+            <Button variant="outline" onClick={shareReport}>
+              <Share2 className="mr-2 h-4 w-4" />
               Share
             </Button>
-            <Button onClick={handleUpload}>
-              <Upload className="mr-2 h-4 w-4" />
-              Upload
-            </Button>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-          {/* Left Sidebar */}
-          <div className="md:col-span-1">
-            <Card>
-              <CardContent className="pt-6">
-                <div className="space-y-1">
-                  <Button
-                    variant={activeTab === "summary" ? "default" : "ghost"}
-                    className="w-full justify-start"
-                    onClick={() => setActiveTab("summary")}
-                  >
+        {/* Tabs */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-xl font-semibold text-forest">Your Health Information</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <Tabs defaultValue="medical" value={activeTab} onValueChange={setActiveTab}>
+              <TabsList className="mb-4">
+                <TabsTrigger value="medical">Medical Records</TabsTrigger>
+                <TabsTrigger value="lab">Lab Results</TabsTrigger>
+                <TabsTrigger value="prescriptions">Prescriptions</TabsTrigger>
+                <TabsTrigger value="vaccinations">Vaccinations</TabsTrigger>
+              </TabsList>
+              
+              {/* Medical Records Tab */}
+              <TabsContent value="medical" className="space-y-4">
+                <div className="flex justify-between items-center">
+                  <h2 className="text-lg font-semibold">Recent Medical Records</h2>
+                  <Button variant="outline">
                     <FileText className="mr-2 h-4 w-4" />
-                    Summary
-                  </Button>
-                  <Button
-                    variant={activeTab === "medications" ? "default" : "ghost"}
-                    className="w-full justify-start"
-                    onClick={() => setActiveTab("medications")}
-                  >
-                    <Pill className="mr-2 h-4 w-4" />
-                    Medications
-                  </Button>
-                  <Button
-                    variant={activeTab === "conditions" ? "default" : "ghost"}
-                    className="w-full justify-start"
-                    onClick={() => setActiveTab("conditions")}
-                  >
-                    <Heart className="mr-2 h-4 w-4" />
-                    Conditions
-                  </Button>
-                  <Button
-                    variant={activeTab === "allergies" ? "default" : "ghost"}
-                    className="w-full justify-start"
-                    onClick={() => setActiveTab("allergies")}
-                  >
-                    <AlertCircle className="mr-2 h-4 w-4" />
-                    Allergies
-                  </Button>
-                  <Button
-                    variant={activeTab === "vaccinations" ? "default" : "ghost"}
-                    className="w-full justify-start"
-                    onClick={() => setActiveTab("vaccinations")}
-                  >
-                    <Syringe className="mr-2 h-4 w-4" />
-                    Vaccinations
-                  </Button>
-                  <Button
-                    variant={activeTab === "labResults" ? "default" : "ghost"}
-                    className="w-full justify-start"
-                    onClick={() => setActiveTab("labResults")}
-                  >
-                    <Flask className="mr-2 h-4 w-4" />
-                    Lab Results
-                  </Button>
-                  <Button
-                    variant={activeTab === "vitals" ? "default" : "ghost"}
-                    className="w-full justify-start"
-                    onClick={() => setActiveTab("vitals")}
-                  >
-                    <HeartPulse className="mr-2 h-4 w-4" />
-                    Vitals
-                  </Button>
-                  <Button
-                    variant={activeTab === "visits" ? "default" : "ghost"}
-                    className="w-full justify-start"
-                    onClick={() => setActiveTab("visits")}
-                  >
-                    <Stethoscope className="mr-2 h-4 w-4" />
-                    Doctor Visits
+                    Add Record
                   </Button>
                 </div>
-              </CardContent>
-            </Card>
-            
-            {/* Recent Updates */}
-            <Card className="mt-6">
-              <CardHeader>
-                <CardTitle className="text-lg font-semibold text-forest">Recent Updates</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <div className="flex items-start gap-4">
-                    <div className="bg-sage/20 text-forest rounded-md p-2 flex-shrink-0">
-                      <Pill className="h-4 w-4" />
-                    </div>
+                
+                {[
+                  { name: "Annual Physical Exam", date: "Apr 15, 2025", doctor: "Dr. Emily Chen" },
+                  { name: "Cardiology Consultation", date: "Mar 20, 2025", doctor: "Dr. Robert Johnson" },
+                  { name: "Dermatology Checkup", date: "Feb 10, 2025", doctor: "Dr. Sarah Williams" }
+                ].map((record, index) => (
+                  <div key={index} className="flex items-center justify-between p-3 bg-sage-light/10 rounded-lg">
                     <div>
-                      <p className="font-medium">Medication Updated</p>
-                      <p className="text-sm text-muted-foreground">Apr 20, 2025</p>
+                      <p className="font-medium">{record.name}</p>
+                      <p className="text-sm text-muted-foreground">{record.date} - {record.doctor}</p>
                     </div>
+                    <Button variant="ghost" size="sm">View</Button>
                   </div>
-                  
-                  <div className="flex items-start gap-4">
-                    <div className="bg-sage/20 text-forest rounded-md p-2 flex-shrink-0">
-                      <Flask className="h-4 w-4" />
-                    </div>
-                    <div>
-                      <p className="font-medium">Lab Results Added</p>
-                      <p className="text-sm text-muted-foreground">Apr 15, 2025</p>
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-start gap-4">
-                    <div className="bg-sage/20 text-forest rounded-md p-2 flex-shrink-0">
-                      <HeartPulse className="h-4 w-4" />
-                    </div>
-                    <div>
-                      <p className="font-medium">Vitals Recorded</p>
-                      <p className="text-sm text-muted-foreground">Apr 10, 2025</p>
-                    </div>
-                  </div>
+                ))}
+              </TabsContent>
+              
+              {/* Lab Results Tab */}
+              <TabsContent value="lab" className="space-y-4">
+                <div className="flex justify-between items-center">
+                  <h2 className="text-lg font-semibold">Recent Lab Results</h2>
+                  <Button variant="outline">
+                    <FlaskConical className="mr-2 h-4 w-4" />
+                    Add Result
+                  </Button>
                 </div>
-              </CardContent>
-            </Card>
-          </div>
+                
+                {[
+                  { name: "Blood Test", date: "Apr 22, 2025", lab: "City Medical Lab" },
+                  { name: "Cholesterol Test", date: "Mar 15, 2025", lab: "Healthcare Diagnostics" },
+                  { name: "Urinalysis", date: "Feb 01, 2025", lab: "Community Labs" }
+                ].map((result, index) => (
+                  <div key={index} className="flex items-center justify-between p-3 bg-sage-light/10 rounded-lg">
+                    <div>
+                      <p className="font-medium">{result.name}</p>
+                      <p className="text-sm text-muted-foreground">{result.date} - {result.lab}</p>
+                    </div>
+                    <Button variant="ghost" size="sm">View</Button>
+                  </div>
+                ))}
+              </TabsContent>
+              
+              {/* Prescriptions Tab */}
+              <TabsContent value="prescriptions" className="space-y-4">
+                <div className="flex justify-between items-center">
+                  <h2 className="text-lg font-semibold">Active Prescriptions</h2>
+                  <Button variant="outline">
+                    <FileText className="mr-2 h-4 w-4" />
+                    Add Prescription
+                  </Button>
+                </div>
+                
+                {[
+                  { name: "Amoxicillin", date: "Apr 28, 2025", doctor: "Dr. Emily Chen" },
+                  { name: "Lisinopril", date: "Mar 10, 2025", doctor: "Dr. Robert Johnson" },
+                  { name: "Vitamin D", date: "Jan 25, 2025", doctor: "Dr. Sarah Williams" }
+                ].map((prescription, index) => (
+                  <div key={index} className="flex items-center justify-between p-3 bg-sage-light/10 rounded-lg">
+                    <div>
+                      <p className="font-medium">{prescription.name}</p>
+                      <p className="text-sm text-muted-foreground">Prescribed on {prescription.date} by {prescription.doctor}</p>
+                    </div>
+                    <Button variant="ghost" size="sm">View</Button>
+                  </div>
+                ))}
+              </TabsContent>
+              
+              {/* Vaccinations Tab */}
+              <TabsContent value="vaccinations" className="space-y-4">
+                <div className="flex justify-between items-center">
+                  <h2 className="text-lg font-semibold">Vaccination Records</h2>
+                  <Button variant="outline">
+                    <Activity className="mr-2 h-4 w-4" />
+                    Add Vaccination
+                  </Button>
+                </div>
+                
+                {[
+                  { name: "Influenza", date: "Oct 15, 2024" },
+                  { name: "Tdap", date: "Jun 01, 2023" },
+                  { name: "MMR", date: "Aug 10, 2000" }
+                ].map((vaccination, index) => (
+                  <div key={index} className="flex items-center justify-between p-3 bg-sage-light/10 rounded-lg">
+                    <div>
+                      <p className="font-medium">{vaccination.name}</p>
+                      <p className="text-sm text-muted-foreground">Administered on {vaccination.date}</p>
+                    </div>
+                    <Button variant="ghost" size="sm">View</Button>
+                  </div>
+                ))}
+              </TabsContent>
+            </Tabs>
+          </CardContent>
+        </Card>
 
-          {/* Main Content */}
-          <div className="md:col-span-3">
-            {activeTab === "summary" && (
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-xl font-semibold text-forest">Health Summary</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-6">
-                    <div>
-                      <h3 className="text-lg font-medium mb-2">Basic Information</h3>
-                      <div className="grid grid-cols-2 gap-4">
-                        <div>
-                          <p className="text-sm text-muted-foreground">Name</p>
-                          <p className="font-medium">Jane Smith</p>
-                        </div>
-                        <div>
-                          <p className="text-sm text-muted-foreground">Date of Birth</p>
-                          <p className="font-medium">January 15, 1980</p>
-                        </div>
-                        <div>
-                          <p className="text-sm text-muted-foreground">Gender</p>
-                          <p className="font-medium">Female</p>
-                        </div>
-                        <div>
-                          <p className="text-sm text-muted-foreground">Blood Type</p>
-                          <p className="font-medium">A+</p>
-                        </div>
-                      </div>
-                    </div>
-                    
-                    <div>
-                      <h3 className="text-lg font-medium mb-2">Active Conditions</h3>
-                      <ul className="list-disc list-inside space-y-1 text-muted-foreground">
-                        <li>Hypertension (diagnosed 2020)</li>
-                        <li>Seasonal Allergies</li>
-                      </ul>
-                    </div>
-                    
-                    <div>
-                      <h3 className="text-lg font-medium mb-2">Current Medications</h3>
-                      <ul className="list-disc list-inside space-y-1 text-muted-foreground">
-                        <li>Lisinopril 10mg, once daily</li>
-                        <li>Loratadine 10mg, as needed</li>
-                        <li>Multivitamin, once daily</li>
-                      </ul>
-                    </div>
-                    
-                    <div>
-                      <h3 className="text-lg font-medium mb-2">Allergies</h3>
-                      <ul className="list-disc list-inside space-y-1 text-muted-foreground">
-                        <li>Penicillin (Severe)</li>
-                        <li>Pollen (Mild)</li>
-                        <li>Shellfish (Moderate)</li>
-                      </ul>
-                    </div>
-                    
-                    <div>
-                      <h3 className="text-lg font-medium mb-2">Recent Vitals</h3>
-                      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                        <Card className="p-3">
-                          <p className="text-sm text-muted-foreground">Blood Pressure</p>
-                          <p className="font-medium text-lg">120/80 mmHg</p>
-                          <p className="text-xs text-muted-foreground">Apr 20, 2025</p>
-                        </Card>
-                        <Card className="p-3">
-                          <p className="text-sm text-muted-foreground">Heart Rate</p>
-                          <p className="font-medium text-lg">72 bpm</p>
-                          <p className="text-xs text-muted-foreground">Apr 20, 2025</p>
-                        </Card>
-                        <Card className="p-3">
-                          <p className="text-sm text-muted-foreground">Temperature</p>
-                          <p className="font-medium text-lg">98.6 °F</p>
-                          <p className="text-xs text-muted-foreground">Apr 20, 2025</p>
-                        </Card>
-                        <Card className="p-3">
-                          <p className="text-sm text-muted-foreground">Weight</p>
-                          <p className="font-medium text-lg">145 lbs</p>
-                          <p className="text-xs text-muted-foreground">Apr 20, 2025</p>
-                        </Card>
-                      </div>
-                    </div>
-                    
-                    <div>
-                      <h3 className="text-lg font-medium mb-2">Upcoming Appointments</h3>
-                      <div className="space-y-2">
-                        <div className="flex items-center justify-between p-3 bg-sage-light/10 rounded-lg">
-                          <div className="flex items-center">
-                            <div className="h-10 w-10 bg-sage/20 rounded-full flex items-center justify-center mr-4">
-                              <Calendar className="h-5 w-5 text-forest" />
-                            </div>
-                            <div>
-                              <p className="font-medium">Annual Physical</p>
-                              <p className="text-sm text-muted-foreground">Dr. Emily Chen</p>
-                            </div>
-                          </div>
-                          <div className="text-right">
-                            <p className="font-medium">May 15, 2025</p>
-                            <p className="text-sm text-muted-foreground">9:00 AM</p>
-                          </div>
-                        </div>
-                        
-                        <div className="flex items-center justify-between p-3 bg-sage-light/10 rounded-lg">
-                          <div className="flex items-center">
-                            <div className="h-10 w-10 bg-sage/20 rounded-full flex items-center justify-center mr-4">
-                              <Clock className="h-5 w-5 text-forest" />
-                            </div>
-                            <div>
-                              <p className="font-medium">Cardiology Follow-up</p>
-                              <p className="text-sm text-muted-foreground">Dr. Robert Johnson</p>
-                            </div>
-                          </div>
-                          <div className="text-right">
-                            <p className="font-medium">Jun 5, 2025</p>
-                            <p className="text-sm text-muted-foreground">2:30 PM</p>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            )}
-            
-            {activeTab === "medications" && (
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between">
-                  <CardTitle className="text-xl font-semibold text-forest">Medications</CardTitle>
-                  <div className="flex items-center space-x-2">
-                    <div className="relative">
-                      <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                      <Input 
-                        placeholder="Search medications..." 
-                        className="pl-9 w-[250px]" 
-                      />
-                    </div>
-                    <Button>
-                      <FilePlus className="mr-2 h-4 w-4" />
-                      Add Medication
-                    </Button>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <Tabs defaultValue="current">
-                    <TabsList className="mb-6">
-                      <TabsTrigger value="current">Current</TabsTrigger>
-                      <TabsTrigger value="past">Past</TabsTrigger>
-                    </TabsList>
-                    
-                    <TabsContent value="current">
-                      <div className="space-y-4">
-                        <div className="p-4 border rounded-lg">
-                          <div className="flex items-start justify-between">
-                            <div>
-                              <h4 className="text-lg font-semibold">Lisinopril 10mg</h4>
-                              <p className="text-sm text-muted-foreground">For Hypertension</p>
-                              <div className="mt-2">
-                                <span className="text-sm font-medium">Instructions:</span>
-                                <span className="text-sm text-muted-foreground ml-1">Take once daily in the morning</span>
-                              </div>
-                              <div className="mt-1">
-                                <span className="text-sm font-medium">Prescribed:</span>
-                                <span className="text-sm text-muted-foreground ml-1">Feb 15, 2025 by Dr. Robert Johnson</span>
-                              </div>
-                            </div>
-                            <div>
-                              <Button variant="outline" size="sm">Refill</Button>
-                            </div>
-                          </div>
-                        </div>
-                        
-                        <div className="p-4 border rounded-lg">
-                          <div className="flex items-start justify-between">
-                            <div>
-                              <h4 className="text-lg font-semibold">Loratadine 10mg</h4>
-                              <p className="text-sm text-muted-foreground">For Seasonal Allergies</p>
-                              <div className="mt-2">
-                                <span className="text-sm font-medium">Instructions:</span>
-                                <span className="text-sm text-muted-foreground ml-1">Take as needed for allergy symptoms</span>
-                              </div>
-                              <div className="mt-1">
-                                <span className="text-sm font-medium">Prescribed:</span>
-                                <span className="text-sm text-muted-foreground ml-1">Mar 10, 2025 by Dr. Emily Chen</span>
-                              </div>
-                            </div>
-                            <div>
-                              <Button variant="outline" size="sm">Refill</Button>
-                            </div>
-                          </div>
-                        </div>
-                        
-                        <div className="p-4 border rounded-lg">
-                          <div className="flex items-start justify-between">
-                            <div>
-                              <h4 className="text-lg font-semibold">Multivitamin</h4>
-                              <p className="text-sm text-muted-foreground">Supplement</p>
-                              <div className="mt-2">
-                                <span className="text-sm font-medium">Instructions:</span>
-                                <span className="text-sm text-muted-foreground ml-1">Take once daily with food</span>
-                              </div>
-                              <div className="mt-1">
-                                <span className="text-sm font-medium">Recommended:</span>
-                                <span className="text-sm text-muted-foreground ml-1">Jan 5, 2025 by Dr. Emily Chen</span>
-                              </div>
-                            </div>
-                            <div>
-                              <Button variant="outline" size="sm">Refill</Button>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </TabsContent>
-                    
-                    <TabsContent value="past">
-                      <div className="space-y-4">
-                        <div className="p-4 border rounded-lg">
-                          <div className="flex items-start justify-between">
-                            <div>
-                              <h4 className="text-lg font-semibold">Amoxicillin 500mg</h4>
-                              <p className="text-sm text-muted-foreground">For Respiratory Infection</p>
-                              <div className="mt-2">
-                                <span className="text-sm font-medium">Instructions:</span>
-                                <span className="text-sm text-muted-foreground ml-1">Take twice daily for 10 days</span>
-                              </div>
-                              <div className="mt-1">
-                                <span className="text-sm font-medium">Prescribed:</span>
-                                <span className="text-sm text-muted-foreground ml-1">Dec 5, 2024 by Dr. Emily Chen</span>
-                              </div>
-                              <div className="mt-1">
-                                <span className="text-sm font-medium">End Date:</span>
-                                <span className="text-sm text-muted-foreground ml-1">Dec 15, 2024</span>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </TabsContent>
-                  </Tabs>
-                </CardContent>
-              </Card>
-            )}
-          </div>
-        </div>
+        {/* Upload New Record */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-xl font-semibold text-forest">Upload New Document</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              <div className="border-2 border-dashed border-muted rounded-lg p-6 flex flex-col items-center justify-center text-center">
+                <FileText className="h-10 w-10 text-muted-foreground mb-4" />
+                <h3 className="text-lg font-medium">Drag and drop files here</h3>
+                <p className="text-sm text-muted-foreground max-w-xs mt-2">
+                  Or click to select files from your computer
+                </p>
+                <Button variant="outline" className="mt-4">
+                  Upload Files
+                </Button>
+              </div>
+              
+              <div>
+                <Label htmlFor="record-type">Record Type</Label>
+                <select 
+                  id="record-type"
+                  className="w-full mt-1 rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                >
+                  <option>Medical Record</option>
+                  <option>Lab Result</option>
+                  <option>Prescription</option>
+                  <option>Vaccination</option>
+                </select>
+              </div>
+              
+              <div>
+                <Label htmlFor="additional-notes">Additional Notes</Label>
+                <Input 
+                  id="additional-notes" 
+                  placeholder="Add any notes about this record"
+                />
+              </div>
+              
+              <Button>Save Record</Button>
+            </div>
+          </CardContent>
+        </Card>
       </div>
     </Layout>
   );

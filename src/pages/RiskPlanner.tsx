@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import Layout from "@/components/layout/Layout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -8,7 +7,6 @@ import { Label } from "@/components/ui/label";
 import { 
   AlertTriangle,
   Heart,
-  Lungs,
   Brain,
   FileCheck,
   ChevronRight,

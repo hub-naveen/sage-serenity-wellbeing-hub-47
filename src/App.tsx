@@ -20,6 +20,11 @@ import GymTraining from "./pages/GymTraining";
 import RiskPlanner from "./pages/RiskPlanner";
 import AccountManager from "./pages/AccountManager";
 import NotFound from "./pages/NotFound";
+import Risk from "./pages/Risk";
+import Trainer from "./pages/Trainer";
+import Diet from "./pages/Diet";
+import Chat from "./pages/Chat";
+import Ocr from "./pages/Ocr";
 
 const queryClient = new QueryClient();
 
@@ -43,6 +48,11 @@ const App = () => (
           <Route path="/gym-training" element={<GymTraining />} />
           <Route path="/risk-planner" element={<RiskPlanner />} />
           <Route path="/account" element={<AccountManager />} />
+          <Route path="/risk" element={<Risk />} />
+          <Route path="/trainer" element={<Trainer />} />
+          <Route path="/diet" element={<Diet />} />
+          <Route path="/chat" element={<Chat />} />
+          <Route path="/ocr" element={<Ocr />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

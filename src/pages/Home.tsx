@@ -41,6 +41,32 @@ const Home = () => {
               </Link>
             </div>
           </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
+            <div className="p-6 rounded-lg bg-white shadow-lg">
+              <h3 className="text-xl font-semibold mb-3 text-forest">Health Risk Assessment</h3>
+              <p className="mb-4 text-muted-foreground">Analyze your health risks with AI assistance</p>
+              <Link to="/risk">
+                <Button className="w-full">Check Risks</Button>
+              </Link>
+            </div>
+            
+            <div className="p-6 rounded-lg bg-white shadow-lg">
+              <h3 className="text-xl font-semibold mb-3 text-forest">Personal Trainer</h3>
+              <p className="mb-4 text-muted-foreground">Connect with expert fitness trainers</p>
+              <Link to="/trainer">
+                <Button className="w-full">Meet Your Trainer</Button>
+              </Link>
+            </div>
+            
+            <div className="p-6 rounded-lg bg-white shadow-lg">
+              <h3 className="text-xl font-semibold mb-3 text-forest">Diet Planning</h3>
+              <p className="mb-4 text-muted-foreground">Get personalized nutrition guidance</p>
+              <Link to="/diet">
+                <Button className="w-full">Plan Your Diet</Button>
+              </Link>
+            </div>
+          </div>
 
           <div className="mt-12">
             <Link to="/signup">

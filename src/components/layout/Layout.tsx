@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import Header from './Header';
 import Footer from './Footer';
 import CustomCursor from '@/components/ui/CustomCursor';
+import { Toaster } from '@/components/ui/toaster';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -55,12 +56,13 @@ const Layout = ({ children }: LayoutProps) => {
       </AnimatePresence>
       <Footer />
       <CustomCursor />
+      <Toaster />
       
-      {/* Enhanced background decorative elements with better contrast */}
+      {/* Enhanced background decorative elements with better contrast for both modes */}
       <div className="fixed inset-0 -z-10 overflow-hidden">
         <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-sage/10 to-transparent opacity-80 dark:from-forest/20"></div>
         
-        {/* Light floating orbs with improved dark mode contrast */}
+        {/* Light floating orbs with improved contrast for both light and dark modes */}
         <motion.div 
           className="absolute top-20 left-1/4 w-64 h-64 rounded-full bg-cream dark:bg-sage/30 opacity-30 blur-3xl dark:opacity-40"
           animate={{ 
@@ -90,9 +92,9 @@ const Layout = ({ children }: LayoutProps) => {
           }}
         />
         
-        {/* Additional animated element with better dark mode visibility */}
+        {/* Additional animated element with better visibility in both modes */}
         <motion.div 
-          className="absolute top-1/3 right-1/3 w-48 h-48 rounded-full bg-lilac/10 dark:bg-forest-light/20 opacity-30 blur-3xl dark:opacity-50"
+          className="absolute top-1/3 right-1/3 w-48 h-48 rounded-full bg-lilac/20 dark:bg-forest-light/30 opacity-30 blur-3xl dark:opacity-50"
           animate={{ 
             scale: [1, 1.3, 1],
             opacity: [0.3, 0.5, 0.3],
@@ -106,7 +108,7 @@ const Layout = ({ children }: LayoutProps) => {
           }}
         />
         
-        {/* Moving gradient mesh for subtle background texture - more visible in dark mode */}
+        {/* Moving gradient mesh for subtle background texture - more visible in both modes */}
         <div className="absolute inset-0 opacity-10 bg-grid dark:opacity-15"></div>
       </div>
     </div>

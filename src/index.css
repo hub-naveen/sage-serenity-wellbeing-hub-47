@@ -121,19 +121,19 @@
 
 @layer components {
   .btn-primary {
-    @apply bg-primary hover:bg-primary/90 text-primary-foreground rounded-md px-4 py-2 font-medium transition-all shadow-sm;
+    @apply bg-primary hover:bg-primary/90 text-primary-foreground rounded-md px-4 py-2 font-medium transition-all shadow-sm hover:shadow-md;
   }
   
   .btn-secondary {
-    @apply bg-secondary hover:bg-secondary/90 text-secondary-foreground rounded-md px-4 py-2 font-medium transition-all shadow-sm;
+    @apply bg-secondary hover:bg-secondary/90 text-secondary-foreground rounded-md px-4 py-2 font-medium transition-all shadow-sm hover:shadow-md;
   }
   
   .btn-outline {
-    @apply border border-primary hover:bg-primary/10 text-primary rounded-md px-4 py-2 font-medium transition-all;
+    @apply border border-primary hover:bg-primary/10 text-primary rounded-md px-4 py-2 font-medium transition-all hover:shadow-sm;
   }
   
   .card-gradient {
-    @apply bg-gradient-to-br from-card to-accent/30 backdrop-blur-sm;
+    @apply bg-gradient-to-br from-card to-accent/30 backdrop-blur-sm shadow-sm hover:shadow-md transition-all duration-300;
   }
   
   .sage-gradient {
@@ -145,7 +145,7 @@
   }
 
   .glass-card {
-    @apply backdrop-blur-sm bg-white/80 border-sage/20 shadow-lg;
+    @apply backdrop-blur-sm bg-white/80 border-sage/20 shadow-lg hover:shadow-xl transition-all duration-300;
   }
 }
 
@@ -209,10 +209,55 @@
   .hover-glow {
     @apply transition-all duration-300 hover:shadow-lg hover:shadow-sage/20;
   }
+  
+  .hover-scale {
+    @apply transition-transform duration-300 hover:scale-105;
+  }
+  
+  .hover-rotate {
+    @apply transition-transform duration-500 hover:rotate-3;
+  }
 
   /* Mask utilities */
   .mask-bottom-fade {
     -webkit-mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
     mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
+  }
+  
+  .mask-top-fade {
+    -webkit-mask-image: linear-gradient(to top, black 60%, transparent 100%);
+    mask-image: linear-gradient(to top, black 60%, transparent 100%);
+  }
+  
+  /* Background effects */
+  .bg-grid {
+    background-image: linear-gradient(to right, hsl(var(--border)) 1px, transparent 1px),
+                     linear-gradient(to bottom, hsl(var(--border)) 1px, transparent 1px);
+    background-size: 20px 20px;
+  }
+  
+  .bg-dots {
+    background-image: radial-gradient(circle, hsl(var(--border)) 1px, transparent 1px);
+    background-size: 20px 20px;
+  }
+  
+  /* Scrollbar styling */
+  .pretty-scrollbar::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  
+  .pretty-scrollbar::-webkit-scrollbar-track {
+    background: hsl(var(--muted));
+    border-radius: 4px;
+  }
+  
+  .pretty-scrollbar::-webkit-scrollbar-thumb {
+    background: hsl(var(--primary)/0.5);
+    border-radius: 4px;
+  }
+  
+  .pretty-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--primary)/0.8);
   }
 }

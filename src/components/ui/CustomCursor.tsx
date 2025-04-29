@@ -6,8 +6,12 @@ const CustomCursor = () => {
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [isPointer, setIsPointer] = useState(false);
   const [isActive, setIsActive] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
   
   useEffect(() => {
+    // Set cursor visible after component mounts to prevent initial animation from wrong position
+    setTimeout(() => setIsVisible(true), 500);
+    
     const moveCursor = (e: MouseEvent) => {
       setPosition({ x: e.clientX, y: e.clientY });
     };
@@ -34,6 +38,8 @@ const CustomCursor = () => {
     };
   }, [position.x, position.y]);
 
+  if (!isVisible) return null;
+
   return (
     <>
       <motion.div
@@ -42,27 +48,55 @@ const CustomCursor = () => {
           x: position.x - 4,
           y: position.y - 4,
           scale: isActive ? 0.5 : 1,
+          opacity: 1
         }}
-        transition={{ type: "spring", damping: 50, stiffness: 500 }}
+        initial={{ opacity: 0 }}
+        transition={{ 
+          type: "spring", 
+          damping: 40, 
+          stiffness: 400,
+          mass: 0.8
+        }}
         style={{ 
           width: 8, 
           height: 8, 
         }}
       />
       <motion.div
-        className={`fixed pointer-events-none z-40 border rounded-full hidden md:block ${isPointer ? 'border-forest' : 'border-white/50 mix-blend-difference'}`}
+        className={`fixed pointer-events-none z-40 border rounded-full hidden md:block ${isPointer ? 'border-forest' : 'border-white/80 mix-blend-difference'}`}
         animate={{
-          x: position.x - 16,
-          y: position.y - 16,
-          scale: isActive ? 1.5 : isPointer ? 1.5 : 1,
-          opacity: isActive || isPointer ? 0.5 : 0.15,
+          x: position.x - 20,
+          y: position.y - 20,
+          scale: isActive ? 1.2 : isPointer ? 1.8 : 1,
+          opacity: isPointer ? 0.7 : 0.3,
+          borderWidth: isPointer ? 1.5 : 1,
         }}
-        transition={{ type: "spring", damping: 30, stiffness: 200, mass: 0.8 }}
+        initial={{ opacity: 0, scale: 0.5 }}
+        transition={{ 
+          type: "spring", 
+          damping: 25, 
+          stiffness: 150, 
+          mass: 0.5 
+        }}
         style={{ 
-          width: 32, 
-          height: 32, 
+          width: 40, 
+          height: 40, 
         }}
       />
+      {isPointer && (
+        <motion.div
+          className="fixed pointer-events-none z-45 text-forest text-xs font-semibold hidden md:block"
+          animate={{
+            x: position.x,
+            y: position.y + 30,
+            opacity: 0.8,
+          }}
+          initial={{ opacity: 0 }}
+          transition={{ duration: 0.2 }}
+        >
+          click
+        </motion.div>
+      )}
     </>
   );
 };

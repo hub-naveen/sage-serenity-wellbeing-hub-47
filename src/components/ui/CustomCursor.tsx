@@ -69,7 +69,6 @@ const CustomCursor = () => {
           y: position.y - 20,
           scale: isActive ? 1.2 : isPointer ? 1.8 : 1,
           opacity: isPointer ? 0.7 : 0.3,
-          borderWidth: isPointer ? 1.5 : 1,
         }}
         initial={{ opacity: 0, scale: 0.5 }}
         transition={{ 
@@ -81,6 +80,7 @@ const CustomCursor = () => {
         style={{ 
           width: 40, 
           height: 40, 
+          borderWidth: isPointer ? 1.5 : 1,
         }}
       />
       {isPointer && (

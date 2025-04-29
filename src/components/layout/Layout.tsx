@@ -56,11 +56,58 @@ const Layout = ({ children }: LayoutProps) => {
       <Footer />
       <CustomCursor />
       
-      {/* Background decorative elements */}
+      {/* Enhanced background decorative elements with more dynamic animations */}
       <div className="fixed inset-0 -z-10 overflow-hidden">
-        <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-sage/5 to-transparent opacity-80"></div>
-        <div className="absolute top-20 left-1/4 w-64 h-64 rounded-full bg-cream opacity-20 blur-3xl animate-pulse" style={{ animationDuration: '15s' }}></div>
-        <div className="absolute bottom-40 right-1/4 w-96 h-96 rounded-full bg-sage/30 opacity-20 blur-3xl animate-pulse" style={{ animationDuration: '20s' }}></div>
+        <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-sage/5 to-transparent opacity-80 dark:from-forest/10"></div>
+        
+        {/* Light floating orbs with improved animations */}
+        <motion.div 
+          className="absolute top-20 left-1/4 w-64 h-64 rounded-full bg-cream dark:bg-sage/20 opacity-20 blur-3xl"
+          animate={{ 
+            scale: [1, 1.2, 1],
+            opacity: [0.2, 0.3, 0.2],
+            y: [0, -15, 0] 
+          }}
+          transition={{ 
+            duration: 15,
+            repeat: Infinity,
+            ease: "easeInOut" 
+          }}
+        />
+        
+        <motion.div 
+          className="absolute bottom-40 right-1/4 w-96 h-96 rounded-full bg-sage/30 dark:bg-cream/10 opacity-20 blur-3xl"
+          animate={{ 
+            scale: [1, 1.1, 1],
+            opacity: [0.2, 0.25, 0.2],
+            y: [0, 20, 0] 
+          }}
+          transition={{ 
+            duration: 20,
+            repeat: Infinity,
+            ease: "easeInOut",
+            delay: 2 
+          }}
+        />
+        
+        {/* Additional animated element */}
+        <motion.div 
+          className="absolute top-1/3 right-1/3 w-48 h-48 rounded-full bg-lilac/10 dark:bg-forest-light/10 opacity-30 blur-3xl"
+          animate={{ 
+            scale: [1, 1.3, 1],
+            opacity: [0.3, 0.4, 0.3],
+            x: [0, 30, 0] 
+          }}
+          transition={{ 
+            duration: 25,
+            repeat: Infinity,
+            ease: "easeInOut",
+            delay: 5 
+          }}
+        />
+        
+        {/* Moving gradient mesh for subtle background texture */}
+        <div className="absolute inset-0 opacity-10 bg-grid dark:opacity-5"></div>
       </div>
     </div>
   );

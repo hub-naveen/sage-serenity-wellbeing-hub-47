@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -102,9 +103,19 @@
     @apply border-border;
   }
 
+  html {
+    @apply scroll-smooth;
+  }
+
   body {
     @apply bg-background text-foreground font-sans;
-    scroll-behavior: smooth;
+    cursor: none;
+  }
+
+  @media (max-width: 768px) {
+    body {
+      cursor: auto;
+    }
   }
 }
 
@@ -132,6 +143,10 @@
   .forest-gradient {
     @apply bg-gradient-to-br from-forest to-forest-light;
   }
+
+  .glass-card {
+    @apply backdrop-blur-sm bg-white/80 border-sage/20 shadow-lg;
+  }
 }
 
 @layer utilities {
@@ -154,6 +169,12 @@
     from { transform: translateX(30px); opacity: 0; }
     to { transform: translateX(0); opacity: 1; }
   }
+
+  @keyframes float {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+    100% { transform: translateY(0px); }
+  }
   
   .animate-fade-in {
     animation: fade-in 0.5s ease-out forwards;
@@ -166,10 +187,32 @@
   .animate-slide-in-right {
     animation: slide-in-right 0.5s ease-out forwards;
   }
+
+  .animate-float {
+    animation: float 3s ease-in-out infinite;
+  }
   
   .delay-100 { animation-delay: 100ms; }
   .delay-200 { animation-delay: 200ms; }
   .delay-300 { animation-delay: 300ms; }
   .delay-400 { animation-delay: 400ms; }
   .delay-500 { animation-delay: 500ms; }
+  .delay-600 { animation-delay: 600ms; }
+  .delay-700 { animation-delay: 700ms; }
+  .delay-800 { animation-delay: 800ms; }
+  
+  /* Hover effects */
+  .hover-lift {
+    @apply transition-transform duration-300 hover:-translate-y-1;
+  }
+  
+  .hover-glow {
+    @apply transition-all duration-300 hover:shadow-lg hover:shadow-sage/20;
+  }
+
+  /* Mask utilities */
+  .mask-bottom-fade {
+    -webkit-mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
+    mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
+  }
 }

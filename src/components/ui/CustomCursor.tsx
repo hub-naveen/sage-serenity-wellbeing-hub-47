@@ -7,10 +7,29 @@ const CustomCursor = () => {
   const [isPointer, setIsPointer] = useState(false);
   const [isActive, setIsActive] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(false);
   
   useEffect(() => {
     // Set cursor visible after component mounts to prevent initial animation from wrong position
     setTimeout(() => setIsVisible(true), 500);
+    
+    // Check for dark mode
+    const checkDarkMode = () => {
+      setIsDarkMode(document.documentElement.classList.contains('dark'));
+    };
+    
+    checkDarkMode();
+    
+    // Listen for dark mode changes
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        if (mutation.attributeName === 'class') {
+          checkDarkMode();
+        }
+      });
+    });
+    
+    observer.observe(document.documentElement, {attributes: true});
     
     const moveCursor = (e: MouseEvent) => {
       setPosition({ x: e.clientX, y: e.clientY });
@@ -31,6 +50,7 @@ const CustomCursor = () => {
     window.addEventListener('mouseup', handleMouseUp);
     
     return () => {
+      observer.disconnect();
       window.removeEventListener('mousemove', moveCursor);
       window.removeEventListener('mousemove', handlePointerCheck);
       window.removeEventListener('mousedown', handleMouseDown);
@@ -43,7 +63,7 @@ const CustomCursor = () => {
   return (
     <>
       <motion.div
-        className="fixed pointer-events-none z-50 rounded-full bg-forest mix-blend-difference hidden md:block"
+        className={`fixed pointer-events-none z-50 rounded-full ${isDarkMode ? 'bg-sage-light' : 'bg-forest'} mix-blend-difference hidden md:block`}
         animate={{
           x: position.x - 4,
           y: position.y - 4,
@@ -63,7 +83,11 @@ const CustomCursor = () => {
         }}
       />
       <motion.div
-        className={`fixed pointer-events-none z-40 border rounded-full hidden md:block ${isPointer ? 'border-forest' : 'border-white/80 mix-blend-difference'}`}
+        className={`fixed pointer-events-none z-40 border rounded-full hidden md:block ${
+          isPointer 
+            ? isDarkMode ? 'border-sage-light' : 'border-forest' 
+            : 'border-white/80 mix-blend-difference'
+        }`}
         animate={{
           x: position.x - 20,
           y: position.y - 20,
@@ -85,7 +109,7 @@ const CustomCursor = () => {
       />
       {isPointer && (
         <motion.div
-          className="fixed pointer-events-none z-45 text-forest text-xs font-semibold hidden md:block"
+          className={`fixed pointer-events-none z-45 ${isDarkMode ? 'text-sage-light' : 'text-forest'} text-xs font-semibold hidden md:block`}
           animate={{
             x: position.x,
             y: position.y + 30,

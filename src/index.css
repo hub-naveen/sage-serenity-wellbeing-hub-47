@@ -1,4 +1,3 @@
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -59,43 +58,43 @@
   }
 
   .dark {
-    /* Dark mode with improved contrast */
+    /* Dark mode with improved contrast for better text visibility */
     --background: 146 9% 13%;  /* Dark forest background */
-    --foreground: 55 19% 91%;  /* Light sage text for contrast */
+    --foreground: 55 19% 96%;  /* Much lighter sage text for better contrast */
 
     --card: 146 9% 15%;
-    --card-foreground: 55 19% 96%;
+    --card-foreground: 55 19% 98%;  /* Even brighter text for cards */
 
     --popover: 146 9% 15%;
-    --popover-foreground: 55 19% 96%;
+    --popover-foreground: 55 19% 98%;
 
-    --primary: 55 19% 65%;  /* Brighter sage as primary in dark mode */
+    --primary: 55 19% 75%;  /* Much brighter sage as primary in dark mode */
     --primary-foreground: 146 9% 13%;
 
     --secondary: 146 9% 33%;  /* Forest as secondary in dark mode */
-    --secondary-foreground: 55 19% 96%;
+    --secondary-foreground: 55 19% 98%;
 
     --muted: 146 9% 18%;
-    --muted-foreground: 55 19% 75%;
+    --muted-foreground: 55 19% 85%;  /* Brighter muted text */
 
-    --accent: 37 100% 88%;  /* Brighter cream as accent */
+    --accent: 37 100% 90%;  /* Brighter cream as accent */
     --accent-foreground: 146 9% 13%;
 
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 55 19% 96%;
+    --destructive: 0 62.8% 40.6%;  /* Brighter destructive */
+    --destructive-foreground: 55 19% 98%;
 
-    --border: 146 9% 23%;
-    --input: 146 9% 23%;
-    --ring: 55 19% 65%;
+    --border: 146 9% 28%;  /* Brighter border */
+    --input: 146 9% 28%;
+    --ring: 55 19% 75%;
     
     --sidebar-background: 146 9% 15%;
-    --sidebar-foreground: 55 19% 96%;
-    --sidebar-primary: 55 19% 65%;
+    --sidebar-foreground: 55 19% 98%;
+    --sidebar-primary: 55 19% 75%;
     --sidebar-primary-foreground: 146 9% 13%;
-    --sidebar-accent: 146 9% 18%;
-    --sidebar-accent-foreground: 55 19% 96%;
-    --sidebar-border: 146 9% 23%;
-    --sidebar-ring: 55 19% 65%;
+    --sidebar-accent: 146 9% 20%;
+    --sidebar-accent-foreground: 55 19% 98%;
+    --sidebar-border: 146 9% 28%;
+    --sidebar-ring: 55 19% 75%;
   }
 }
 
@@ -161,17 +160,17 @@
   }
 
   .glass-card {
-    @apply backdrop-blur-sm bg-white/80 dark:bg-black/20 border-sage/20 dark:border-forest/30 shadow-lg hover:shadow-xl transition-all duration-300;
+    @apply backdrop-blur-sm bg-white/80 dark:bg-black/30 border-sage/20 dark:border-forest-light/30 shadow-lg hover:shadow-xl transition-all duration-300;
   }
   
-  /* New component classes */
+  /* New component classes with improved dark mode contrast */
   .feature-card {
-    @apply relative overflow-hidden rounded-xl border border-border p-6 hover:border-primary/50 transition-all duration-300 hover:shadow-lg bg-card/50;
+    @apply relative overflow-hidden rounded-xl border border-border p-6 hover:border-primary/50 transition-all duration-300 hover:shadow-lg bg-card/50 dark:bg-card/80;
   }
   
   .feature-card:before {
     content: '';
-    @apply absolute inset-0 -z-10 bg-gradient-to-br from-card to-accent/10 opacity-0 transition-opacity duration-300;
+    @apply absolute inset-0 -z-10 bg-gradient-to-br from-card to-accent/10 dark:from-card/80 dark:to-primary/20 opacity-0 transition-opacity duration-300;
   }
   
   .feature-card:hover:before {
@@ -179,7 +178,7 @@
   }
   
   .nav-link {
-    @apply relative py-2 px-4 text-foreground/80 hover:text-foreground transition-colors duration-300;
+    @apply relative py-2 px-4 text-foreground/90 hover:text-foreground transition-colors duration-300;
   }
   
   .nav-link:after {
@@ -193,6 +192,24 @@
   
   .active-nav-link:after {
     @apply w-full;
+  }
+  
+  /* Improved heading styles for better visibility */
+  .heading-1 {
+    @apply text-3xl font-bold text-forest dark:text-sage-light;
+  }
+  
+  .heading-2 {
+    @apply text-2xl font-bold text-forest dark:text-sage-light;
+  }
+  
+  /* Health Hub specific components */
+  .health-card {
+    @apply p-5 rounded-xl bg-white/90 dark:bg-forest-dark/90 backdrop-blur-md border border-sage/20 dark:border-sage/40 shadow-md hover:shadow-lg transition-all duration-300;
+  }
+  
+  .health-section-title {
+    @apply text-xl font-bold text-forest dark:text-sage-light mb-4;
   }
 }
 
@@ -337,10 +354,41 @@
   
   /* New Glassmorphism effects */
   .glass-effect {
-    @apply backdrop-blur-md bg-white/10 dark:bg-black/20 border border-white/20 dark:border-white/10;
+    @apply backdrop-blur-md bg-white/10 dark:bg-black/30 border border-white/20 dark:border-white/20;
   }
   
   .frost-effect {
-    @apply backdrop-blur-xl bg-white/30 dark:bg-white/5 border border-white/30 dark:border-white/10 shadow-lg;
+    @apply backdrop-blur-xl bg-white/30 dark:bg-white/10 border border-white/30 dark:border-white/20 shadow-lg;
+  }
+  
+  /* Text protection overlay for better readability on varied backgrounds */
+  .text-protection-layer {
+    @apply relative z-10;
+  }
+  
+  .text-protection-layer::before {
+    content: '';
+    @apply absolute inset-0 -z-10 bg-background/40 dark:bg-background/60 backdrop-blur-sm rounded-md;
+  }
+  
+  /* Enhanced utilities for accessibility */
+  .high-contrast-text {
+    @apply text-forest dark:text-sage-light;
+  }
+  
+  .medium-contrast-text {
+    @apply text-forest-dark dark:text-sage;
+  }
+  
+  .interactive-hover {
+    @apply transition-all duration-300 hover:scale-105 hover:shadow-md active:scale-95;
+  }
+  
+  .smooth-scroll-container {
+    @apply scroll-smooth pretty-scrollbar;
+  }
+  
+  .page-transition-ready {
+    @apply transition-all duration-500 ease-in-out;
   }
 }

@@ -23,5 +23,5 @@ export const useAuth = () => {
   return context;
 };
 
-// Re-export types for convenience
-export { User, UserRole, AuthProvider as AuthProviderType } from "@/types/auth";
+// Re-export types using 'export type' syntax for isolatedModules compatibility
+export type { User, UserRole, AuthProvider as AuthProviderType } from "@/types/auth";

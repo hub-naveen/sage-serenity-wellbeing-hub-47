@@ -30,6 +30,7 @@ import About from "./pages/About";
 import Privacy from "./pages/Privacy";
 import Terms from "./pages/Terms";
 import Contact from "./pages/Contact";
+import HealthForm from "./pages/HealthForm";
 
 const queryClient = new QueryClient();
 
@@ -75,6 +76,7 @@ const AppWithAuth = () => (
     <Route path="/diet" element={<ProtectedRoute element={<Diet />} />} />
     <Route path="/chat" element={<ProtectedRoute element={<Chat />} />} />
     <Route path="/ocr" element={<ProtectedRoute element={<Ocr />} />} />
+    <Route path="/health-form" element={<ProtectedRoute element={<HealthForm />} />} />
     <Route path="/about" element={<About />} />
     <Route path="/privacy" element={<Privacy />} />
     <Route path="/terms" element={<Terms />} />

@@ -15,9 +15,14 @@ const LogoutButton = ({
 }: LogoutButtonProps) => {
   const { logout } = useAuth();
 
+  const handleLogout = () => {
+    // Call the logout function from AuthContext
+    logout();
+  };
+
   return (
     <Button 
-      onClick={logout} 
+      onClick={handleLogout} 
       variant={variant} 
       className={`flex items-center gap-2 ${className}`}
     >

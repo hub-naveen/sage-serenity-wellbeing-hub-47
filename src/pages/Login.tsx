@@ -1,183 +1,166 @@
 
-import { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { Link, Navigate } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useAuth } from "@/contexts/AuthContext";
 import Layout from "@/components/layout/Layout";
-import { Button } from "@/components/ui/button";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useToast } from "@/hooks/use-toast";
-import { motion } from "framer-motion";
-import { Lock } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
+import { CardTitle, CardDescription, CardHeader, CardContent, Card } from "@/components/ui/card";
 import GoogleButton from "@/components/auth/GoogleButton";
 import MicrosoftButton from "@/components/auth/MicrosoftButton";
-import { useAuth } from "@/contexts/AuthContext";
+import { Eye, EyeOff, Mail, Lock } from "lucide-react";
+
+// Define login form schema
+const loginSchema = z.object({
+  email: z.string().email("Please enter a valid email address"),
+  password: z.string().min(6, "Password must be at least 6 characters"),
+});
+
+type LoginFormValues = z.infer<typeof loginSchema>;
 
 const Login = () => {
-  const { toast } = useToast();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-  const [isLoaded, setIsLoaded] = useState(false);
-  const navigate = useNavigate();
   const { login, isAuthenticated } = useAuth();
+  const [showPassword, setShowPassword] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  useEffect(() => {
-    // If user is already authenticated, redirect to dashboard
-    if (isAuthenticated) {
-      navigate("/dashboard");
-    }
-    setIsLoaded(true);
-  }, [isAuthenticated, navigate]);
+  // Define form
+  const form = useForm<LoginFormValues>({
+    resolver: zodResolver(loginSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+  });
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
-    
+  // Handle form submission
+  const onSubmit = async (data: LoginFormValues) => {
+    setIsSubmitting(true);
     try {
-      // Use the login function from auth context
-      const success = await login(email, password);
-      
-      if (!success) {
-        setIsLoading(false);
-      }
-    } catch (error) {
-      setIsLoading(false);
-      toast({
-        title: "Error",
-        description: "An unexpected error occurred. Please try again.",
-        variant: "destructive",
-      });
+      await login(data.email, data.password);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
-  const handleProviderSuccess = (provider: string, token: string) => {
-    console.log(`${provider} login successful, token:`, token);
-    // The redirect is handled in the loginWithProvider function
-  };
+  // If already authenticated, redirect to dashboard
+  if (isAuthenticated) {
+    return <Navigate to="/dashboard" />;
+  }
 
   return (
     <Layout>
-      <div className="relative min-h-[80vh] flex items-center justify-center overflow-hidden">
-        {/* Background effects */}
-        <div className="absolute top-20 left-20 w-72 h-72 bg-sage/20 rounded-full mix-blend-multiply filter blur-3xl opacity-30"></div>
-        <div className="absolute bottom-20 right-20 w-80 h-80 bg-lilac/30 rounded-full mix-blend-multiply filter blur-3xl opacity-20"></div>
-        
-        <div className="container mx-auto px-4 py-8 max-w-md relative">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: isLoaded ? 1 : 0, y: isLoaded ? 0 : 20 }}
-            transition={{ duration: 0.5 }}
-          >
-            <Card className="backdrop-blur-sm bg-white/90 border-sage/20 shadow-lg dark:bg-black/50 dark:border-white/10">
-              <CardHeader className="text-center">
-                <div className="mx-auto bg-sage/15 w-16 h-16 rounded-full flex items-center justify-center mb-4">
-                  <Lock className="h-8 w-8 text-forest dark:text-cream" />
-                </div>
-                <CardTitle className="text-2xl font-bold text-center text-forest dark:text-cream">
-                  Login to Your Account
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <form className="space-y-4" onSubmit={handleSubmit}>
-                  <motion.div 
-                    className="space-y-2"
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: isLoaded ? 1 : 0, y: isLoaded ? 0 : 10 }}
-                    transition={{ delay: 0.1, duration: 0.5 }}
-                  >
-                    <Label htmlFor="email" className="text-forest dark:text-cream">Email</Label>
-                    <Input 
-                      id="email" 
-                      type="email" 
-                      placeholder="john@example.com" 
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      required
-                      className="transition-all focus:border-forest focus:ring-forest"
-                    />
-                  </motion.div>
-                  
-                  <motion.div 
-                    className="space-y-2"
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: isLoaded ? 1 : 0, y: isLoaded ? 0 : 10 }}
-                    transition={{ delay: 0.2, duration: 0.5 }}
-                  >
-                    <div className="flex items-center justify-between">
-                      <Label htmlFor="password" className="text-forest dark:text-cream">Password</Label>
-                      <Link to="/forgot-password" className="text-sm text-forest hover:underline dark:text-cream">
-                        Forgot Password?
-                      </Link>
-                    </div>
-                    <Input 
-                      id="password" 
-                      type="password" 
-                      placeholder="••••••••" 
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      required
-                      className="transition-all focus:border-forest focus:ring-forest"
-                    />
-                  </motion.div>
-                  
-                  <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: isLoaded ? 1 : 0, y: isLoaded ? 0 : 10 }}
-                    transition={{ delay: 0.3, duration: 0.5 }}
-                  >
-                    <Button 
-                      className="w-full bg-forest hover:bg-forest-dark transition-colors text-cream" 
-                      type="submit" 
-                      disabled={isLoading}
-                    >
-                      {isLoading ? "Logging in..." : "Login"}
-                    </Button>
-                  </motion.div>
-                  
-                  <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: isLoaded ? 1 : 0, y: isLoaded ? 0 : 10 }}
-                    transition={{ delay: 0.4, duration: 0.5 }}
-                    className="relative flex items-center py-2"
-                  >
-                    <div className="flex-grow border-t border-border"></div>
-                    <span className="flex-shrink mx-4 text-muted-foreground text-sm">or</span>
-                    <div className="flex-grow border-t border-border"></div>
-                  </motion.div>
-                  
-                  <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: isLoaded ? 1 : 0, y: isLoaded ? 0 : 10 }}
-                    transition={{ delay: 0.5, duration: 0.5 }}
-                    className="space-y-3"
-                  >
-                    <GoogleButton 
-                      text="Login with Google"
-                      onSuccess={(token) => handleProviderSuccess("Google", token)}
-                    />
-                    
-                    <MicrosoftButton 
-                      text="Login with Microsoft"
-                      onSuccess={(token) => handleProviderSuccess("Microsoft", token)}
-                    />
-                  </motion.div>
-                  
-                  <motion.p 
-                    className="text-center text-sm text-muted-foreground"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: isLoaded ? 1 : 0 }}
-                    transition={{ delay: 0.6, duration: 0.5 }}
-                  >
-                    Don't have an account?{" "}
-                    <Link to="/signup" className="text-forest hover:underline dark:text-cream">
-                      Sign Up
+      <div className="container mx-auto px-4 py-12">
+        <div className="max-w-md mx-auto">
+          <Card className="shadow-lg border-sage/20">
+            <CardHeader className="text-center">
+              <CardTitle className="text-2xl font-bold text-forest">Welcome Back</CardTitle>
+              <CardDescription>
+                Sign in to your HealthHub.ai account
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Form {...form}>
+                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                  <FormField
+                    control={form.control}
+                    name="email"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Email</FormLabel>
+                        <div className="relative">
+                          <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                          <FormControl>
+                            <Input
+                              placeholder="your@email.com"
+                              className="pl-10"
+                              {...field}
+                              disabled={isSubmitting}
+                            />
+                          </FormControl>
+                        </div>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="password"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Password</FormLabel>
+                        <div className="relative">
+                          <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                          <FormControl>
+                            <Input
+                              type={showPassword ? "text" : "password"}
+                              placeholder="••••••••"
+                              className="pl-10"
+                              {...field}
+                              disabled={isSubmitting}
+                            />
+                          </FormControl>
+                          <button
+                            type="button"
+                            className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                            onClick={() => setShowPassword(!showPassword)}
+                          >
+                            {showPassword ? (
+                              <EyeOff className="h-4 w-4" />
+                            ) : (
+                              <Eye className="h-4 w-4" />
+                            )}
+                          </button>
+                        </div>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <div className="text-right">
+                    <Link to="/forgot-password" className="text-sm text-forest hover:underline">
+                      Forgot password?
                     </Link>
-                  </motion.p>
+                  </div>
+                  <Button
+                    type="submit"
+                    className="w-full bg-forest hover:bg-forest-dark"
+                    disabled={isSubmitting}
+                  >
+                    {isSubmitting ? "Signing In..." : "Sign In"}
+                  </Button>
                 </form>
-              </CardContent>
-            </Card>
-          </motion.div>
+              </Form>
+
+              <div className="mt-6">
+                <div className="relative">
+                  <div className="absolute inset-0 flex items-center">
+                    <Separator />
+                  </div>
+                  <div className="relative flex justify-center text-xs uppercase">
+                    <span className="bg-background px-2 text-muted-foreground">
+                      Or continue with
+                    </span>
+                  </div>
+                </div>
+
+                <div className="mt-6 space-y-3">
+                  <GoogleButton />
+                  <MicrosoftButton />
+                </div>
+              </div>
+
+              <div className="mt-6 text-center text-sm">
+                Don't have an account?{" "}
+                <Link to="/signup" className="text-forest font-medium hover:underline">
+                  Sign up
+                </Link>
+              </div>
+            </CardContent>
+          </Card>
         </div>
       </div>
     </Layout>

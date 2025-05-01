@@ -2,7 +2,6 @@
 import { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
-import { Microsoft } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 
 interface MicrosoftButtonProps {
@@ -55,7 +54,12 @@ const MicrosoftButton = ({
       className={`w-full flex items-center justify-center gap-2 ${className}`}
     >
       {!isLoading ? (
-        <Microsoft className="h-5 w-5 text-[#00A4EF]" />
+        <svg className="h-5 w-5" viewBox="0 0 23 23" xmlns="http://www.w3.org/2000/svg">
+          <path fill="#f35325" d="M1 1h10v10H1z"/>
+          <path fill="#81bc06" d="M12 1h10v10H12z"/>
+          <path fill="#05a6f0" d="M1 12h10v10H1z"/>
+          <path fill="#ffba08" d="M12 12h10v10H12z"/>
+        </svg>
       ) : null}
       {isLoading ? "Processing..." : text}
     </Button>

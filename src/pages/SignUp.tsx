@@ -9,6 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { motion } from "framer-motion";
 import { UserPlus } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import GoogleButton from "@/components/auth/GoogleButton";
 
 const SignUp = () => {
   const [isLoaded, setIsLoaded] = useState(false);
@@ -26,6 +27,15 @@ const SignUp = () => {
     });
   };
 
+  const handleGoogleSuccess = (token: string) => {
+    console.log("Google sign-up successful, token:", token);
+    // In a real app, you would store the token and redirect the user
+    toast({
+      title: "Google Sign-Up Successful",
+      description: "Your account has been created with Google."
+    });
+  };
+
   return (
     <Layout>
       <div className="relative min-h-[80vh] flex items-center justify-center overflow-hidden">
@@ -39,12 +49,12 @@ const SignUp = () => {
             animate={{ opacity: isLoaded ? 1 : 0, y: isLoaded ? 0 : 20 }}
             transition={{ duration: 0.5 }}
           >
-            <Card className="backdrop-blur-sm bg-white/90 border-sage/20 shadow-lg">
+            <Card className="backdrop-blur-sm bg-white/90 border-sage/20 shadow-lg dark:bg-black/50 dark:border-white/10">
               <CardHeader className="text-center">
                 <div className="mx-auto bg-sage/15 w-16 h-16 rounded-full flex items-center justify-center mb-4">
-                  <UserPlus className="h-8 w-8 text-forest" />
+                  <UserPlus className="h-8 w-8 text-forest dark:text-cream" />
                 </div>
-                <CardTitle className="text-2xl font-bold text-center text-forest">
+                <CardTitle className="text-2xl font-bold text-center text-forest dark:text-cream">
                   Create Your Account
                 </CardTitle>
               </CardHeader>
@@ -56,7 +66,7 @@ const SignUp = () => {
                     animate={{ opacity: isLoaded ? 1 : 0, y: isLoaded ? 0 : 10 }}
                     transition={{ delay: 0.1, duration: 0.5 }}
                   >
-                    <Label htmlFor="name">Full Name</Label>
+                    <Label htmlFor="name" className="text-forest dark:text-cream">Full Name</Label>
                     <Input id="name" placeholder="John Doe" className="transition-all focus:border-forest focus:ring-forest" />
                   </motion.div>
                   
@@ -66,7 +76,7 @@ const SignUp = () => {
                     animate={{ opacity: isLoaded ? 1 : 0, y: isLoaded ? 0 : 10 }}
                     transition={{ delay: 0.2, duration: 0.5 }}
                   >
-                    <Label htmlFor="email">Email</Label>
+                    <Label htmlFor="email" className="text-forest dark:text-cream">Email</Label>
                     <Input id="email" type="email" placeholder="john@example.com" className="transition-all focus:border-forest focus:ring-forest" />
                   </motion.div>
                   
@@ -76,7 +86,7 @@ const SignUp = () => {
                     animate={{ opacity: isLoaded ? 1 : 0, y: isLoaded ? 0 : 10 }}
                     transition={{ delay: 0.3, duration: 0.5 }}
                   >
-                    <Label htmlFor="password">Password</Label>
+                    <Label htmlFor="password" className="text-forest dark:text-cream">Password</Label>
                     <Input id="password" type="password" placeholder="••••••••" className="transition-all focus:border-forest focus:ring-forest" />
                   </motion.div>
                   
@@ -86,7 +96,7 @@ const SignUp = () => {
                     animate={{ opacity: isLoaded ? 1 : 0, y: isLoaded ? 0 : 10 }}
                     transition={{ delay: 0.4, duration: 0.5 }}
                   >
-                    <Label htmlFor="confirm-password">Confirm Password</Label>
+                    <Label htmlFor="confirm-password" className="text-forest dark:text-cream">Confirm Password</Label>
                     <Input id="confirm-password" type="password" placeholder="••••••••" className="transition-all focus:border-forest focus:ring-forest" />
                   </motion.div>
                   
@@ -95,19 +105,38 @@ const SignUp = () => {
                     animate={{ opacity: isLoaded ? 1 : 0, y: isLoaded ? 0 : 10 }}
                     transition={{ delay: 0.5, duration: 0.5 }}
                   >
-                    <Button className="w-full bg-forest hover:bg-forest-dark transition-colors" type="submit">
+                    <Button className="w-full bg-forest hover:bg-forest-dark transition-colors text-cream" type="submit">
                       Sign Up
                     </Button>
+                  </motion.div>
+                  
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: isLoaded ? 1 : 0, y: isLoaded ? 0 : 10 }}
+                    transition={{ delay: 0.6, duration: 0.5 }}
+                    className="relative flex items-center py-2"
+                  >
+                    <div className="flex-grow border-t border-border"></div>
+                    <span className="flex-shrink mx-4 text-muted-foreground text-sm">or</span>
+                    <div className="flex-grow border-t border-border"></div>
+                  </motion.div>
+                  
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: isLoaded ? 1 : 0, y: isLoaded ? 0 : 10 }}
+                    transition={{ delay: 0.7, duration: 0.5 }}
+                  >
+                    <GoogleButton onSuccess={handleGoogleSuccess} />
                   </motion.div>
                   
                   <motion.p 
                     className="text-center text-sm text-muted-foreground"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: isLoaded ? 1 : 0 }}
-                    transition={{ delay: 0.6, duration: 0.5 }}
+                    transition={{ delay: 0.8, duration: 0.5 }}
                   >
                     Already have an account?{" "}
-                    <Link to="/login" className="text-forest hover:underline">
+                    <Link to="/login" className="text-forest dark:text-cream hover:underline">
                       Login
                     </Link>
                   </motion.p>

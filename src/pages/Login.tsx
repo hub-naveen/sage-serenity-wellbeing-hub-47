@@ -9,6 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { motion } from "framer-motion";
 import { Lock } from "lucide-react";
+import GoogleButton from "@/components/auth/GoogleButton";
 
 const Login = () => {
   const { toast } = useToast();
@@ -35,6 +36,15 @@ const Login = () => {
     }, 1500);
   };
 
+  const handleGoogleSuccess = (token: string) => {
+    console.log("Google login successful, token:", token);
+    // In a real app, you would store the token and redirect the user
+    toast({
+      title: "Google Login Successful",
+      description: "You have been logged in with Google."
+    });
+  };
+
   return (
     <Layout>
       <div className="relative min-h-[80vh] flex items-center justify-center overflow-hidden">
@@ -48,12 +58,12 @@ const Login = () => {
             animate={{ opacity: isLoaded ? 1 : 0, y: isLoaded ? 0 : 20 }}
             transition={{ duration: 0.5 }}
           >
-            <Card className="backdrop-blur-sm bg-white/90 border-sage/20 shadow-lg">
+            <Card className="backdrop-blur-sm bg-white/90 border-sage/20 shadow-lg dark:bg-black/50 dark:border-white/10">
               <CardHeader className="text-center">
                 <div className="mx-auto bg-sage/15 w-16 h-16 rounded-full flex items-center justify-center mb-4">
-                  <Lock className="h-8 w-8 text-forest" />
+                  <Lock className="h-8 w-8 text-forest dark:text-cream" />
                 </div>
-                <CardTitle className="text-2xl font-bold text-center text-forest">
+                <CardTitle className="text-2xl font-bold text-center text-forest dark:text-cream">
                   Login to Your Account
                 </CardTitle>
               </CardHeader>
@@ -65,7 +75,7 @@ const Login = () => {
                     animate={{ opacity: isLoaded ? 1 : 0, y: isLoaded ? 0 : 10 }}
                     transition={{ delay: 0.1, duration: 0.5 }}
                   >
-                    <Label htmlFor="email">Email</Label>
+                    <Label htmlFor="email" className="text-forest dark:text-cream">Email</Label>
                     <Input 
                       id="email" 
                       type="email" 
@@ -84,8 +94,8 @@ const Login = () => {
                     transition={{ delay: 0.2, duration: 0.5 }}
                   >
                     <div className="flex items-center justify-between">
-                      <Label htmlFor="password">Password</Label>
-                      <Link to="/forgot-password" className="text-sm text-forest hover:underline">
+                      <Label htmlFor="password" className="text-forest dark:text-cream">Password</Label>
+                      <Link to="/forgot-password" className="text-sm text-forest hover:underline dark:text-cream">
                         Forgot Password?
                       </Link>
                     </div>
@@ -106,7 +116,7 @@ const Login = () => {
                     transition={{ delay: 0.3, duration: 0.5 }}
                   >
                     <Button 
-                      className="w-full bg-forest hover:bg-forest-dark transition-colors" 
+                      className="w-full bg-forest hover:bg-forest-dark transition-colors text-cream" 
                       type="submit" 
                       disabled={isLoading}
                     >
@@ -114,14 +124,36 @@ const Login = () => {
                     </Button>
                   </motion.div>
                   
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: isLoaded ? 1 : 0, y: isLoaded ? 0 : 10 }}
+                    transition={{ delay: 0.4, duration: 0.5 }}
+                    className="relative flex items-center py-2"
+                  >
+                    <div className="flex-grow border-t border-border"></div>
+                    <span className="flex-shrink mx-4 text-muted-foreground text-sm">or</span>
+                    <div className="flex-grow border-t border-border"></div>
+                  </motion.div>
+                  
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: isLoaded ? 1 : 0, y: isLoaded ? 0 : 10 }}
+                    transition={{ delay: 0.5, duration: 0.5 }}
+                  >
+                    <GoogleButton 
+                      text="Login with Google"
+                      onSuccess={handleGoogleSuccess}
+                    />
+                  </motion.div>
+                  
                   <motion.p 
                     className="text-center text-sm text-muted-foreground"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: isLoaded ? 1 : 0 }}
-                    transition={{ delay: 0.4, duration: 0.5 }}
+                    transition={{ delay: 0.6, duration: 0.5 }}
                   >
                     Don't have an account?{" "}
-                    <Link to="/signup" className="text-forest hover:underline">
+                    <Link to="/signup" className="text-forest hover:underline dark:text-cream">
                       Sign Up
                     </Link>
                   </motion.p>

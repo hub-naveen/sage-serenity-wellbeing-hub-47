@@ -12,7 +12,8 @@ import {
   Dumbbell, 
   FileText, 
   LayoutDashboard,
-  User
+  User,
+  LogOut
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -22,6 +23,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useAuth } from "@/contexts/AuthContext";
+import LogoutButton from "@/components/auth/LogoutButton";
 
 interface HeaderProps {
   isDarkMode: boolean;
@@ -32,6 +35,7 @@ const Header = ({ isDarkMode, toggleDarkMode }: HeaderProps) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
+  const { isAuthenticated } = useAuth();
   
   // Check if the path matches the current location
   const isActive = (path: string) => {
@@ -203,7 +207,7 @@ const Header = ({ isDarkMode, toggleDarkMode }: HeaderProps) => {
               {isDarkMode ? <Sun size={18} /> : <Moon size={18} />}
             </Button>
             
-            {/* User Account Button */}
+            {/* User Account Button - Updated with Logout Option */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" size="icon" className="rounded-full">
@@ -213,27 +217,41 @@ const Header = ({ isDarkMode, toggleDarkMode }: HeaderProps) => {
               <DropdownMenuContent align="end" className="w-56 bg-card/95 backdrop-blur-sm border-border">
                 <DropdownMenuLabel>My Account</DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem asChild>
-                  <Link to="/profile" className="w-full cursor-pointer">
-                    Profile
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link to="/account" className="w-full cursor-pointer">
-                    Account Settings
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem asChild>
-                  <Link to="/login" className="w-full cursor-pointer">
-                    Sign In
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link to="/signup" className="w-full cursor-pointer">
-                    Sign Up
-                  </Link>
-                </DropdownMenuItem>
+                
+                {isAuthenticated ? (
+                  <>
+                    <DropdownMenuItem asChild>
+                      <Link to="/profile" className="w-full cursor-pointer">
+                        Profile
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Link to="/account" className="w-full cursor-pointer">
+                        Account Settings
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem asChild>
+                      <LogoutButton className="w-full cursor-pointer justify-start px-2" variant="ghost">
+                        <LogOut className="mr-2 h-4 w-4" />
+                        Sign Out
+                      </LogoutButton>
+                    </DropdownMenuItem>
+                  </>
+                ) : (
+                  <>
+                    <DropdownMenuItem asChild>
+                      <Link to="/login" className="w-full cursor-pointer">
+                        Sign In
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Link to="/signup" className="w-full cursor-pointer">
+                        Sign Up
+                      </Link>
+                    </DropdownMenuItem>
+                  </>
+                )}
               </DropdownMenuContent>
             </DropdownMenu>
           </nav>
@@ -252,7 +270,7 @@ const Header = ({ isDarkMode, toggleDarkMode }: HeaderProps) => {
           </button>
         </div>
 
-        {/* Mobile Menu - Improved for better visibility and organization */}
+        {/* Mobile Menu - Updated with auth-aware options */}
         {isMobileMenuOpen && (
           <nav className="md:hidden pt-4 pb-3 space-y-1 divide-y divide-border/40">
             <div className="py-2 space-y-1">
@@ -338,18 +356,37 @@ const Header = ({ isDarkMode, toggleDarkMode }: HeaderProps) => {
             
             <div className="py-2 space-y-1">
               <p className="text-xs font-medium text-muted-foreground px-3 py-1">Account</p>
-              <Link
-                to="/profile"
-                className="block px-3 py-2 rounded-md hover:bg-primary/10 text-foreground hover:text-primary"
-              >
-                Profile
-              </Link>
-              <Link
-                to="/account"
-                className="block px-3 py-2 rounded-md hover:bg-primary/10 text-foreground hover:text-primary"
-              >
-                Account Settings
-              </Link>
+              {isAuthenticated ? (
+                <>
+                  <Link
+                    to="/profile"
+                    className="block px-3 py-2 rounded-md hover:bg-primary/10 text-foreground hover:text-primary"
+                  >
+                    Profile
+                  </Link>
+                  <Link
+                    to="/account"
+                    className="block px-3 py-2 rounded-md hover:bg-primary/10 text-foreground hover:text-primary"
+                  >
+                    Account Settings
+                  </Link>
+                  <div className="px-3 py-2">
+                    <LogoutButton variant="outline" className="w-full justify-center">
+                      <LogOut className="mr-2 h-4 w-4" />
+                      Sign Out
+                    </LogoutButton>
+                  </div>
+                </>
+              ) : (
+                <div className="flex gap-2 px-3 py-2">
+                  <Link to="/login" className="w-full">
+                    <Button variant="outline" size="sm" className="w-full">Sign In</Button>
+                  </Link>
+                  <Link to="/signup" className="w-full">
+                    <Button size="sm" className="w-full">Sign Up</Button>
+                  </Link>
+                </div>
+              )}
             </div>
             
             <div className="pt-2 flex items-center justify-between">
@@ -357,9 +394,6 @@ const Header = ({ isDarkMode, toggleDarkMode }: HeaderProps) => {
                 {isDarkMode ? <Sun size={16} className="mr-2" /> : <Moon size={16} className="mr-2" />}
                 {isDarkMode ? 'Light Mode' : 'Dark Mode'}
               </Button>
-              <Link to="/signup">
-                <Button size="sm" variant="default">Sign Up</Button>
-              </Link>
             </div>
           </nav>
         )}

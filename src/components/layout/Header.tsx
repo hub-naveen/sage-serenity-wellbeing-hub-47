@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -13,7 +12,9 @@ import {
   FileText, 
   LayoutDashboard,
   User,
-  LogOut
+  LogOut,
+  Bell,
+  Flame
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -25,6 +26,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useAuth } from "@/contexts/AuthContext";
 import LogoutButton from "@/components/auth/LogoutButton";
+import { Badge } from "@/components/ui/badge";
 
 interface HeaderProps {
   isDarkMode: boolean;
@@ -36,6 +38,10 @@ const Header = ({ isDarkMode, toggleDarkMode }: HeaderProps) => {
   const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
   const { isAuthenticated } = useAuth();
+  // New state to track unread notifications count (this would typically come from a backend API)
+  const [unreadNotifications, setUnreadNotifications] = useState(3);
+  // Add streak state - in a real app, this would come from an API
+  const [streak, setStreak] = useState(7);
   
   // Check if the path matches the current location
   const isActive = (path: string) => {
@@ -207,6 +213,131 @@ const Header = ({ isDarkMode, toggleDarkMode }: HeaderProps) => {
               {isDarkMode ? <Sun size={18} /> : <Moon size={18} />}
             </Button>
             
+            {/* New Notification Bell */}
+            {isAuthenticated && (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="icon" className="rounded-full relative">
+                    <Bell size={18} />
+                    {unreadNotifications > 0 && (
+                      <Badge className="absolute -top-1 -right-1 px-1.5 py-0.5 min-w-[18px] h-[18px] flex items-center justify-center text-[10px] bg-red-500 text-white border-background border-2 rounded-full">
+                        {unreadNotifications > 9 ? '9+' : unreadNotifications}
+                      </Badge>
+                    )}
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-80 bg-card/95 backdrop-blur-sm border-border">
+                  <DropdownMenuLabel className="flex justify-between">
+                    <span>Notifications</span>
+                    <Button 
+                      variant="ghost" 
+                      className="h-auto p-0 text-xs hover:text-primary hover:bg-transparent"
+                      onClick={() => setUnreadNotifications(0)}
+                    >
+                      Mark all as read
+                    </Button>
+                  </DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  
+                  {/* Sample notifications - These would come from API */}
+                  <DropdownMenuItem className="py-3 px-4 focus:bg-primary/5 cursor-default">
+                    <div className="flex gap-3 items-start w-full">
+                      <div className="h-8 w-8 rounded-full bg-primary/20 flex items-center justify-center text-primary flex-shrink-0">
+                        <Activity size={16} />
+                      </div>
+                      <div className="flex-1">
+                        <div className="flex justify-between items-start w-full mb-1">
+                          <p className="font-medium text-sm">Health Assessment Reminder</p>
+                          <span className="text-xs text-muted-foreground">2h ago</span>
+                        </div>
+                        <p className="text-xs text-muted-foreground">It's time for your weekly health check-in. Complete your assessment now.</p>
+                      </div>
+                    </div>
+                  </DropdownMenuItem>
+                  
+                  <DropdownMenuItem className="py-3 px-4 focus:bg-primary/5 cursor-default">
+                    <div className="flex gap-3 items-start w-full">
+                      <div className="h-8 w-8 rounded-full bg-primary/20 flex items-center justify-center text-primary flex-shrink-0">
+                        <Dumbbell size={16} />
+                      </div>
+                      <div className="flex-1">
+                        <div className="flex justify-between items-start w-full mb-1">
+                          <p className="font-medium text-sm">Workout Scheduled</p>
+                          <span className="text-xs text-muted-foreground">1d ago</span>
+                        </div>
+                        <p className="text-xs text-muted-foreground">Your personal trainer has scheduled a new workout session for tomorrow.</p>
+                      </div>
+                    </div>
+                  </DropdownMenuItem>
+                  
+                  <DropdownMenuItem className="py-3 px-4 focus:bg-primary/5 cursor-default">
+                    <div className="flex gap-3 items-start w-full">
+                      <div className="h-8 w-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 flex-shrink-0 dark:bg-blue-950 dark:text-blue-400">
+                        <FileText size={16} />
+                      </div>
+                      <div className="flex-1">
+                        <div className="flex justify-between items-start w-full mb-1">
+                          <p className="font-medium text-sm">New Health Records</p>
+                          <span className="text-xs text-muted-foreground">3d ago</span>
+                        </div>
+                        <p className="text-xs text-muted-foreground">Your lab results have been uploaded to your health records.</p>
+                      </div>
+                    </div>
+                  </DropdownMenuItem>
+                  
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem asChild>
+                    <Link to="/account" className="justify-center text-primary text-sm py-2">
+                      View all notifications
+                    </Link>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            )}
+            
+            {/* Streak Counter */}
+            {isAuthenticated && (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="icon" className="rounded-full relative flex items-center justify-center">
+                    <Flame className="h-[18px] w-[18px] text-orange-500" />
+                    <span className="ml-1 text-sm font-medium">{streak}</span>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-64 bg-card/95 backdrop-blur-sm border-border p-4">
+                  <div className="flex flex-col items-center space-y-3">
+                    <div className="flex items-center space-x-2">
+                      <Flame className="h-6 w-6 text-orange-500" />
+                      <span className="text-xl font-bold">{streak} Day Streak!</span>
+                    </div>
+                    <p className="text-sm text-muted-foreground text-center">
+                      You've been active for {streak} days in a row. Keep it up!
+                    </p>
+                    <div className="w-full flex gap-1 mt-2">
+                      {Array.from({ length: 7 }).map((_, i) => (
+                        <div 
+                          key={i} 
+                          className={`flex-1 h-2 rounded-full ${
+                            i < (streak % 7 || 7) ? 'bg-gradient-to-r from-orange-400 to-orange-500' : 'bg-gray-200 dark:bg-gray-700'
+                          }`}
+                        />
+                      ))}
+                    </div>
+                    <p className="text-xs text-muted-foreground">
+                      Last activity: Today at 9:30 AM
+                    </p>
+                    <div className="w-full pt-2 mt-2 border-t border-border">
+                      <DropdownMenuItem asChild className="justify-center cursor-pointer">
+                        <Link to="/dashboard" className="text-primary text-sm">
+                          View activity history
+                        </Link>
+                      </DropdownMenuItem>
+                    </div>
+                  </div>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            )}
+            
             {/* User Account Button - Updated with Logout Option */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -369,6 +500,30 @@ const Header = ({ isDarkMode, toggleDarkMode }: HeaderProps) => {
                     className="block px-3 py-2 rounded-md hover:bg-primary/10 text-foreground hover:text-primary"
                   >
                     Account Settings
+                  </Link>
+                  <div 
+                    className="flex px-3 py-2 rounded-md hover:bg-primary/10 text-foreground hover:text-primary items-center justify-between cursor-pointer"
+                    onClick={() => setUnreadNotifications(0)}
+                  >
+                    <div className="flex items-center">
+                      <Bell size={16} className="mr-2" />
+                      <span>Notifications</span>
+                    </div>
+                    {unreadNotifications > 0 && (
+                      <Badge className="bg-red-500 text-white px-1.5 h-[18px] min-w-[18px]">
+                        {unreadNotifications > 9 ? '9+' : unreadNotifications}
+                      </Badge>
+                    )}
+                  </div>
+                  <Link
+                    to="/dashboard"
+                    className="flex px-3 py-2 rounded-md hover:bg-primary/10 text-foreground hover:text-primary items-center justify-between"
+                  >
+                    <div className="flex items-center">
+                      <Flame size={16} className="mr-2 text-orange-500" />
+                      <span>Activity Streak</span>
+                    </div>
+                    <span className="font-medium text-orange-500">{streak} days</span>
                   </Link>
                   <div className="px-3 py-2">
                     <LogoutButton variant="outline" className="w-full justify-center">

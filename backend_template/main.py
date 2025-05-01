@@ -1,4 +1,3 @@
-
 """
 Main FastAPI application entry point for HealthHub API
 """
@@ -16,7 +15,8 @@ from routers import (
     disease_predictor,
     diet,
     fitness,
-    risk_assessment
+    risk_assessment,
+    ai_chat
 )
 
 app = FastAPI(
@@ -43,6 +43,7 @@ app.include_router(disease_predictor.router)
 app.include_router(diet.router)
 app.include_router(fitness.router)
 app.include_router(risk_assessment.router)
+app.include_router(ai_chat.router)
 
 @app.get("/")
 async def root():

@@ -1,4 +1,3 @@
-
 #root {
   max-width: 1280px;
   margin: 0 auto;
@@ -42,6 +41,7 @@
   padding: 2em;
   background: rgba(255, 255, 255, 0.6);
   border-radius: var(--radius);
+  -webkit-backdrop-filter: blur(10px); /* Safari compatibility */
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.2);
   transition: all 0.3s ease;

@@ -1,4 +1,3 @@
-
 """
 Fitness tracking routes for HealthHub API
 """
@@ -6,6 +5,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from typing import List, Dict, Any
 from datetime import datetime, timedelta
+from pydantic import BaseModel
 
 from database import get_db
 import models

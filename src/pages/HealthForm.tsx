@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
@@ -170,10 +169,35 @@ const HealthForm = () => {
     checkProgress();
   };
 
-  // Handle next step
-  const handleNextStep = () => {
-    if (step < totalSteps) {
+  // Handle next step with validation
+  const handleNextStep = async () => {
+    let fieldsToValidate: (keyof HealthFormValues)[] = [];
+
+    if (step === 1) {
+      fieldsToValidate = ['fullName', 'email', 'age', 'gender', 'height', 'weight'];
+    } else if (step === 2) {
+      fieldsToValidate = ['activityLevel', 'healthConcerns', 'otherHealthConcerns'];
+      // Conditional validation for otherHealthConcerns if 'other' is checked
+      if (form.getValues('healthConcerns.other') && !form.getValues('otherHealthConcerns')) {
+          form.setError('otherHealthConcerns', {
+              type: 'manual',
+              message: 'Please specify other concerns if checked.'
+          });
+          return; // Stop if conditional validation fails
+      }
+    }
+    // No validation needed to move from step 3 (as submission handles final validation)
+
+    const isValid = await form.trigger(fieldsToValidate);
+
+    if (isValid && step < totalSteps) {
       setStep(step + 1);
+    } else if (!isValid) {
+        toast({
+            title: "Missing Information",
+            description: "Please fill out all required fields for this step.",
+            variant: "destructive",
+        });
     }
   };
 
@@ -373,7 +397,7 @@ const HealthForm = () => {
                         <FormItem>
                           <FormLabel>Activity Level</FormLabel>
                           <div className="relative">
-                            <Activity className="absolute left-3 top-9 h-4 w-4 text-muted-foreground" />
+                            <Activity className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                             <Select
                               onValueChange={field.onChange}
                               defaultValue={field.value}

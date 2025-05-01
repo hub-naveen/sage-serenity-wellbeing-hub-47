@@ -1,4 +1,3 @@
-
 """
 Disease prediction routes for HealthHub API
 """
@@ -96,14 +95,11 @@ async def analyze_disease_risk(
         user_id=current_user.id,
         disease_name=disease_type,
         risk_score=risk_score,
-        factors=str(factors)  # Convert dict to string for storage
+        factors=factors  # Store directly as JSON
     )
     
     db.add(db_risk)
     db.commit()
     db.refresh(db_risk)
-    
-    # Convert string back to dict for response
-    db_risk.factors = factors
     
     return db_risk

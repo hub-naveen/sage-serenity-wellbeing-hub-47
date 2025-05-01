@@ -1,4 +1,3 @@
-
 """
 Risk assessment routes for HealthHub API
 """
@@ -6,6 +5,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from typing import List, Dict, Any
 from datetime import datetime
+from pydantic import BaseModel
 
 from database import get_db
 import models
@@ -170,19 +170,13 @@ async def get_risk_assessment_history(
     # Format the response
     history = []
     for risk in risk_history:
-        # Convert stored string back to dict
-        try:
-            import json
-            factors = json.loads(risk.factors.replace("'", "\""))
-        except:
-            factors = {}
-            
+        # The factors field is already in JSON format, no conversion needed
         history.append({
             "id": risk.id,
             "disease": risk.disease_name,
             "risk_score": risk.risk_score,
             "risk_level": "High" if risk.risk_score > 50 else "Moderate" if risk.risk_score > 25 else "Low",
-            "factors": factors,
+            "factors": risk.factors,
             "assessed_at": risk.assessed_at
         })
     

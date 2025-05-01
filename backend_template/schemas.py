@@ -1,4 +1,3 @@
-
 """
 Pydantic schemas for request/response models
 """
@@ -126,3 +125,10 @@ class DiseaseRiskResponse(DiseaseRiskBase):
     
     class Config:
         orm_mode = True
+
+# AI Chat Schemas
+class AIChatMessageInput(BaseModel):
+    message: str = Field(..., min_length=1, description="User message to the AI chat bot")
+
+class AIChatMessageOutput(BaseModel):
+    response: str = Field(..., description="AI chat bot response")

@@ -1,5 +1,7 @@
-
 import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
 import Layout from "@/components/layout/Layout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -24,12 +26,51 @@ import {
 } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/hooks/use-toast";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Form, FormField, FormItem, FormControl, FormMessage, FormLabel } from "@/components/ui/form";
+
+// Define Zod schema for the General tab form
+const generalFormSchema = z.object({
+  firstName: z.string().min(1, "First name is required"),
+  lastName: z.string().min(1, "Last name is required"),
+  email: z.string().email("Invalid email address"),
+  phone: z.string().optional(), // Assuming phone is optional
+  timezone: z.string().min(1, "Timezone is required"),
+  language: z.string().min(1, "Language is required"),
+});
+type GeneralFormValues = z.infer<typeof generalFormSchema>;
 
 const AccountManager = () => {
   const [activeTab, setActiveTab] = useState("general");
   const [showPassword, setShowPassword] = useState(false);
   const { toast } = useToast();
   
+  // Initialize react-hook-form for the General tab
+  const form = useForm<GeneralFormValues>({
+    resolver: zodResolver(generalFormSchema),
+    // TODO: Fetch actual user data for defaultValues
+    defaultValues: {
+      firstName: "Jane",
+      lastName: "Smith",
+      email: "jane.smith@example.com",
+      phone: "+1 (555) 123-4567",
+      timezone: "America/New_York",
+      language: "en",
+    },
+    mode: "onChange", // Optional: Add validation mode if needed
+  });
+
+  // Handle General form submission
+  const onGeneralSubmit = (data: GeneralFormValues) => {
+    console.log("General settings submitted:", data);
+    // TODO: Add API call to update general user info
+    toast({
+      title: "Settings saved",
+      description: "Your general settings have been updated successfully."
+    });
+  };
+
+  // Keep the basic saveChanges for other potential forms for now
   const saveChanges = () => {
     toast({
       title: "Settings saved",
@@ -156,61 +197,121 @@ const AccountManager = () => {
                   <CardTitle className="text-xl font-semibold text-forest">General Information</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <form className="space-y-6" onSubmit={(e) => { e.preventDefault(); saveChanges(); }}>
+                  <Form {...form}>
+                    <form className="space-y-6" onSubmit={form.handleSubmit(onGeneralSubmit)}>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <div className="space-y-2">
-                        <Label htmlFor="firstName">First Name</Label>
-                        <Input id="firstName" defaultValue="Jane" />
+                        <FormField
+                          control={form.control}
+                          name="firstName"
+                          render={({ field }) => (
+                            <FormItem className="space-y-2">
+                              <FormLabel>First Name</FormLabel>
+                              <FormControl>
+                                <Input placeholder="Jane" {...field} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        
+                        <FormField
+                          control={form.control}
+                          name="lastName"
+                          render={({ field }) => (
+                            <FormItem className="space-y-2">
+                              <FormLabel>Last Name</FormLabel>
+                              <FormControl>
+                                <Input placeholder="Smith" {...field} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
                       </div>
                       
-                      <div className="space-y-2">
-                        <Label htmlFor="lastName">Last Name</Label>
-                        <Input id="lastName" defaultValue="Smith" />
-                      </div>
-                    </div>
-                    
-                    <div className="space-y-2">
-                      <Label htmlFor="email">Email</Label>
-                      <Input id="email" type="email" defaultValue="jane.smith@example.com" />
-                    </div>
-                    
-                    <div className="space-y-2">
-                      <Label htmlFor="phone">Phone Number</Label>
-                      <Input id="phone" defaultValue="+1 (555) 123-4567" />
-                    </div>
-                    
-                    <div className="space-y-2">
-                      <Label htmlFor="timezone">Timezone</Label>
-                      <select 
-                        id="timezone"
-                        className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-                      >
-                        <option value="America/New_York">Eastern Time (ET)</option>
-                        <option value="America/Chicago">Central Time (CT)</option>
-                        <option value="America/Denver">Mountain Time (MT)</option>
-                        <option value="America/Los_Angeles">Pacific Time (PT)</option>
-                        <option value="Pacific/Honolulu">Hawaii Time (HT)</option>
-                      </select>
-                    </div>
-                    
-                    <div className="space-y-2">
-                      <Label htmlFor="language">Language</Label>
-                      <select 
-                        id="language"
-                        className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-                      >
-                        <option value="en">English</option>
-                        <option value="es">Spanish</option>
-                        <option value="fr">French</option>
-                        <option value="de">German</option>
-                        <option value="zh">Chinese</option>
-                      </select>
-                    </div>
+                      <FormField
+                        control={form.control}
+                        name="email"
+                        render={({ field }) => (
+                          <FormItem className="space-y-2">
+                            <FormLabel>Email</FormLabel>
+                            <FormControl>
+                              <Input type="email" placeholder="your@email.com" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      
+                      <FormField
+                        control={form.control}
+                        name="phone"
+                        render={({ field }) => (
+                          <FormItem className="space-y-2">
+                            <FormLabel>Phone Number</FormLabel>
+                            <FormControl>
+                              <Input placeholder="+1 (555) 123-4567" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      
+                      <FormField
+                        control={form.control}
+                        name="timezone"
+                        render={({ field }) => (
+                          <FormItem className="space-y-2">
+                            <FormLabel>Timezone</FormLabel>
+                            <Select onValueChange={field.onChange} defaultValue={field.value}>
+                              <FormControl>
+                                <SelectTrigger id="timezone">
+                                  <SelectValue placeholder="Select timezone" />
+                                </SelectTrigger>
+                              </FormControl>
+                              <SelectContent>
+                                <SelectItem value="America/New_York">Eastern Time (ET)</SelectItem>
+                                <SelectItem value="America/Chicago">Central Time (CT)</SelectItem>
+                                <SelectItem value="America/Denver">Mountain Time (MT)</SelectItem>
+                                <SelectItem value="America/Los_Angeles">Pacific Time (PT)</SelectItem>
+                                <SelectItem value="Pacific/Honolulu">Hawaii Time (HT)</SelectItem>
+                              </SelectContent>
+                            </Select>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      
+                      <FormField
+                        control={form.control}
+                        name="language"
+                        render={({ field }) => (
+                          <FormItem className="space-y-2">
+                            <FormLabel>Language</FormLabel>
+                            <Select onValueChange={field.onChange} defaultValue={field.value}>
+                              <FormControl>
+                                <SelectTrigger id="language">
+                                  <SelectValue placeholder="Select language" />
+                                </SelectTrigger>
+                              </FormControl>
+                              <SelectContent>
+                                <SelectItem value="en">English</SelectItem>
+                                <SelectItem value="es">Spanish</SelectItem>
+                                <SelectItem value="fr">French</SelectItem>
+                                <SelectItem value="de">German</SelectItem>
+                                <SelectItem value="zh">Chinese</SelectItem>
+                              </SelectContent>
+                            </Select>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
                     
                     <div className="flex justify-end">
                       <Button type="submit">Save Changes</Button>
                     </div>
                   </form>
+                  </Form>
                 </CardContent>
               </Card>
             )}

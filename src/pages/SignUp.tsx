@@ -10,6 +10,7 @@ import { motion } from "framer-motion";
 import { UserPlus } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import GoogleButton from "@/components/auth/GoogleButton";
+import MicrosoftButton from "@/components/auth/MicrosoftButton";
 import { useAuth } from "@/contexts/AuthContext";
 
 const SignUp = () => {
@@ -73,16 +74,9 @@ const SignUp = () => {
     }
   };
 
-  const handleGoogleSuccess = (token: string) => {
-    console.log("Google sign-up successful, token:", token);
-    // In a real app, you would send this token to your backend
-    toast({
-      title: "Google Sign-Up Successful",
-      description: "Your account has been created with Google."
-    });
-    
-    // Simulate redirect to dashboard after Google signup
-    navigate("/dashboard");
+  const handleProviderSuccess = (provider: string, token: string) => {
+    console.log(`${provider} sign-up successful, token:`, token);
+    // The redirect is handled in the loginWithProvider function
   };
 
   return (
@@ -209,8 +203,10 @@ const SignUp = () => {
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: isLoaded ? 1 : 0, y: isLoaded ? 0 : 10 }}
                     transition={{ delay: 0.7, duration: 0.5 }}
+                    className="space-y-3"
                   >
-                    <GoogleButton onSuccess={handleGoogleSuccess} />
+                    <GoogleButton onSuccess={(token) => handleProviderSuccess("Google", token)} />
+                    <MicrosoftButton onSuccess={(token) => handleProviderSuccess("Microsoft", token)} />
                   </motion.div>
                   
                   <motion.p 

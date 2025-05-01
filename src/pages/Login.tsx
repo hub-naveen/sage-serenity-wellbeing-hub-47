@@ -10,6 +10,7 @@ import { useToast } from "@/hooks/use-toast";
 import { motion } from "framer-motion";
 import { Lock } from "lucide-react";
 import GoogleButton from "@/components/auth/GoogleButton";
+import MicrosoftButton from "@/components/auth/MicrosoftButton";
 import { useAuth } from "@/contexts/AuthContext";
 
 const Login = () => {
@@ -50,16 +51,9 @@ const Login = () => {
     }
   };
 
-  const handleGoogleSuccess = (token: string) => {
-    console.log("Google login successful, token:", token);
-    // In a real app, you would send this token to your backend
-    toast({
-      title: "Google Login Successful",
-      description: "You have been logged in with Google."
-    });
-    
-    // Simulate redirect to dashboard after Google login
-    navigate("/dashboard");
+  const handleProviderSuccess = (provider: string, token: string) => {
+    console.log(`${provider} login successful, token:`, token);
+    // The redirect is handled in the loginWithProvider function
   };
 
   return (
@@ -156,10 +150,16 @@ const Login = () => {
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: isLoaded ? 1 : 0, y: isLoaded ? 0 : 10 }}
                     transition={{ delay: 0.5, duration: 0.5 }}
+                    className="space-y-3"
                   >
                     <GoogleButton 
                       text="Login with Google"
-                      onSuccess={handleGoogleSuccess}
+                      onSuccess={(token) => handleProviderSuccess("Google", token)}
+                    />
+                    
+                    <MicrosoftButton 
+                      text="Login with Microsoft"
+                      onSuccess={(token) => handleProviderSuccess("Microsoft", token)}
                     />
                   </motion.div>
                   

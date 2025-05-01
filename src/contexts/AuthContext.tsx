@@ -5,11 +5,13 @@ import { useToast } from "@/hooks/use-toast";
 
 // Define user types and authentication state
 type UserRole = "admin" | "doctor" | "patient" | null;
+type AuthProvider = "email" | "google" | "microsoft";
 
 interface User {
   email: string;
   role: UserRole;
   name?: string;
+  provider?: AuthProvider;
 }
 
 interface AuthContextType {
@@ -17,6 +19,7 @@ interface AuthContextType {
   isAuthenticated: boolean;
   login: (email: string, password: string) => Promise<boolean>;
   signUp: (name: string, email: string, password: string) => Promise<boolean>;
+  loginWithProvider: (provider: "google" | "microsoft") => Promise<boolean>;
   logout: () => void;
 }
 
@@ -49,7 +52,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       // Special credential check for admin and doctor roles
       if (email === "personalaccdinesh@gmail.com") {
         if (password === "admin@123") {
-          const adminUser = { email, role: "admin" as UserRole, name: "Admin User" };
+          const adminUser = { email, role: "admin" as UserRole, name: "Admin User", provider: "email" as AuthProvider };
           setUser(adminUser);
           setIsAuthenticated(true);
           localStorage.setItem("user", JSON.stringify(adminUser));
@@ -60,7 +63,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           navigate("/admin");
           return true;
         } else if (password === "doctor@123") {
-          const doctorUser = { email, role: "doctor" as UserRole, name: "Doctor User" };
+          const doctorUser = { email, role: "doctor" as UserRole, name: "Doctor User", provider: "email" as AuthProvider };
           setUser(doctorUser);
           setIsAuthenticated(true);
           localStorage.setItem("user", JSON.stringify(doctorUser));
@@ -75,7 +78,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       // Regular user login (mock)
       if (email && password.length >= 6) {
-        const regularUser = { email, role: "patient" as UserRole };
+        const regularUser = { email, role: "patient" as UserRole, provider: "email" as AuthProvider };
         setUser(regularUser);
         setIsAuthenticated(true);
         localStorage.setItem("user", JSON.stringify(regularUser));
@@ -108,7 +111,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       // This is a mock implementation - in a real app, this would call an API
       if (email && password.length >= 6 && name) {
-        const newUser = { email, role: "patient" as UserRole, name };
+        const newUser = { email, role: "patient" as UserRole, name, provider: "email" as AuthProvider };
         setUser(newUser);
         setIsAuthenticated(true);
         localStorage.setItem("user", JSON.stringify(newUser));
@@ -137,6 +140,44 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
+  const loginWithProvider = async (provider: "google" | "microsoft"): Promise<boolean> => {
+    try {
+      // In a real app, this would verify the tokens from the providers
+      const providerName = provider === "google" ? "Google" : "Microsoft";
+      
+      // Create a mock user based on the provider
+      const mockEmail = `user-${Math.random().toString(36).substring(2)}@${provider}.com`;
+      const mockName = `${providerName} User`;
+      
+      const newUser = { 
+        email: mockEmail, 
+        role: "patient" as UserRole, 
+        name: mockName, 
+        provider: provider as AuthProvider 
+      };
+      
+      setUser(newUser);
+      setIsAuthenticated(true);
+      localStorage.setItem("user", JSON.stringify(newUser));
+      
+      toast({
+        title: "Login Successful",
+        description: `You've been logged in with ${providerName}!`,
+      });
+      
+      navigate("/dashboard");
+      return true;
+    } catch (error) {
+      console.error(`${provider} login error:`, error);
+      toast({
+        title: "Authentication Failed",
+        description: `Could not sign in with ${provider}. Please try again.`,
+        variant: "destructive",
+      });
+      return false;
+    }
+  };
+
   const logout = () => {
     setUser(null);
     setIsAuthenticated(false);
@@ -149,7 +190,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   return (
-    <AuthContext.Provider value={{ user, isAuthenticated, login, signUp, logout }}>
+    <AuthContext.Provider value={{ user, isAuthenticated, login, signUp, loginWithProvider, logout }}>
       {children}
     </AuthContext.Provider>
   );

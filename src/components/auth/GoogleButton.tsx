@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface GoogleButtonProps {
   text?: string;
@@ -16,31 +17,22 @@ const GoogleButton = ({
 }: GoogleButtonProps) => {
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
+  const { loginWithProvider } = useAuth();
 
   const handleGoogleSignIn = async () => {
     setIsLoading(true);
     
-    // This is a mock implementation since we don't have a backend
-    // In a real implementation, this would redirect to your OAuth endpoint
-    
     try {
       // Simulate API call delay
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      await new Promise(resolve => setTimeout(resolve, 1000));
       
-      // Mock success case - in a real app, this would come from the OAuth flow
-      const mockToken = "google-mock-token-" + Math.random().toString(36).substring(2);
+      // Mock success case with Google provider
+      const success = await loginWithProvider("google");
       
-      if (onSuccess) {
+      if (success && onSuccess) {
+        const mockToken = "google-mock-token-" + Math.random().toString(36).substring(2);
         onSuccess(mockToken);
       }
-      
-      toast({
-        title: "Authentication Successful",
-        description: "You've successfully signed in with Google.",
-      });
-      
-      // In a real implementation, you might redirect here
-      // window.location.href = "/dashboard";
     } catch (error) {
       toast({
         title: "Authentication Failed",

@@ -1,6 +1,6 @@
 
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Layout from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -10,30 +10,79 @@ import { motion } from "framer-motion";
 import { UserPlus } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import GoogleButton from "@/components/auth/GoogleButton";
+import { useAuth } from "@/contexts/AuthContext";
 
 const SignUp = () => {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
   const { toast } = useToast();
+  const navigate = useNavigate();
+  const { signUp, isAuthenticated } = useAuth();
   
   useEffect(() => {
+    // If user is already authenticated, redirect to dashboard
+    if (isAuthenticated) {
+      navigate("/dashboard");
+    }
     setIsLoaded(true);
-  }, []);
+  }, [isAuthenticated, navigate]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    toast({
-      title: "Account created",
-      description: "Your account has been created successfully."
-    });
+    
+    // Validate passwords match
+    if (password !== confirmPassword) {
+      toast({
+        title: "Error",
+        description: "Passwords do not match.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    // Validate password length
+    if (password.length < 6) {
+      toast({
+        title: "Error",
+        description: "Password must be at least 6 characters long.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    setIsLoading(true);
+    
+    try {
+      // Use the signUp function from auth context
+      const success = await signUp(name, email, password);
+      
+      if (!success) {
+        setIsLoading(false);
+      }
+    } catch (error) {
+      setIsLoading(false);
+      toast({
+        title: "Error",
+        description: "An unexpected error occurred. Please try again.",
+        variant: "destructive",
+      });
+    }
   };
 
   const handleGoogleSuccess = (token: string) => {
     console.log("Google sign-up successful, token:", token);
-    // In a real app, you would store the token and redirect the user
+    // In a real app, you would send this token to your backend
     toast({
       title: "Google Sign-Up Successful",
       description: "Your account has been created with Google."
     });
+    
+    // Simulate redirect to dashboard after Google signup
+    navigate("/dashboard");
   };
 
   return (
@@ -67,7 +116,14 @@ const SignUp = () => {
                     transition={{ delay: 0.1, duration: 0.5 }}
                   >
                     <Label htmlFor="name" className="text-forest dark:text-cream">Full Name</Label>
-                    <Input id="name" placeholder="John Doe" className="transition-all focus:border-forest focus:ring-forest" />
+                    <Input 
+                      id="name" 
+                      placeholder="John Doe" 
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      required
+                      className="transition-all focus:border-forest focus:ring-forest" 
+                    />
                   </motion.div>
                   
                   <motion.div 
@@ -77,7 +133,15 @@ const SignUp = () => {
                     transition={{ delay: 0.2, duration: 0.5 }}
                   >
                     <Label htmlFor="email" className="text-forest dark:text-cream">Email</Label>
-                    <Input id="email" type="email" placeholder="john@example.com" className="transition-all focus:border-forest focus:ring-forest" />
+                    <Input 
+                      id="email" 
+                      type="email" 
+                      placeholder="john@example.com" 
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      required
+                      className="transition-all focus:border-forest focus:ring-forest" 
+                    />
                   </motion.div>
                   
                   <motion.div 
@@ -87,7 +151,15 @@ const SignUp = () => {
                     transition={{ delay: 0.3, duration: 0.5 }}
                   >
                     <Label htmlFor="password" className="text-forest dark:text-cream">Password</Label>
-                    <Input id="password" type="password" placeholder="••••••••" className="transition-all focus:border-forest focus:ring-forest" />
+                    <Input 
+                      id="password" 
+                      type="password" 
+                      placeholder="••••••••" 
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      required
+                      className="transition-all focus:border-forest focus:ring-forest" 
+                    />
                   </motion.div>
                   
                   <motion.div 
@@ -97,7 +169,15 @@ const SignUp = () => {
                     transition={{ delay: 0.4, duration: 0.5 }}
                   >
                     <Label htmlFor="confirm-password" className="text-forest dark:text-cream">Confirm Password</Label>
-                    <Input id="confirm-password" type="password" placeholder="••••••••" className="transition-all focus:border-forest focus:ring-forest" />
+                    <Input 
+                      id="confirm-password" 
+                      type="password" 
+                      placeholder="••••••••" 
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                      required
+                      className="transition-all focus:border-forest focus:ring-forest" 
+                    />
                   </motion.div>
                   
                   <motion.div
@@ -105,8 +185,12 @@ const SignUp = () => {
                     animate={{ opacity: isLoaded ? 1 : 0, y: isLoaded ? 0 : 10 }}
                     transition={{ delay: 0.5, duration: 0.5 }}
                   >
-                    <Button className="w-full bg-forest hover:bg-forest-dark transition-colors text-cream" type="submit">
-                      Sign Up
+                    <Button 
+                      className="w-full bg-forest hover:bg-forest-dark transition-colors text-cream" 
+                      type="submit"
+                      disabled={isLoading}
+                    >
+                      {isLoading ? "Creating Account..." : "Sign Up"}
                     </Button>
                   </motion.div>
                   

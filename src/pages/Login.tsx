@@ -1,6 +1,6 @@
 
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Layout from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -10,6 +10,7 @@ import { useToast } from "@/hooks/use-toast";
 import { motion } from "framer-motion";
 import { Lock } from "lucide-react";
 import GoogleButton from "@/components/auth/GoogleButton";
+import { useAuth } from "@/contexts/AuthContext";
 
 const Login = () => {
   const { toast } = useToast();
@@ -17,32 +18,48 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
+  const navigate = useNavigate();
+  const { login, isAuthenticated } = useAuth();
 
   useEffect(() => {
+    // If user is already authenticated, redirect to dashboard
+    if (isAuthenticated) {
+      navigate("/dashboard");
+    }
     setIsLoaded(true);
-  }, []);
+  }, [isAuthenticated, navigate]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     
-    // Simulate login
-    setTimeout(() => {
+    try {
+      // Use the login function from auth context
+      const success = await login(email, password);
+      
+      if (!success) {
+        setIsLoading(false);
+      }
+    } catch (error) {
       setIsLoading(false);
       toast({
-        title: "Login successful",
-        description: "You have been logged in successfully.",
+        title: "Error",
+        description: "An unexpected error occurred. Please try again.",
+        variant: "destructive",
       });
-    }, 1500);
+    }
   };
 
   const handleGoogleSuccess = (token: string) => {
     console.log("Google login successful, token:", token);
-    // In a real app, you would store the token and redirect the user
+    // In a real app, you would send this token to your backend
     toast({
       title: "Google Login Successful",
       description: "You have been logged in with Google."
     });
+    
+    // Simulate redirect to dashboard after Google login
+    navigate("/dashboard");
   };
 
   return (

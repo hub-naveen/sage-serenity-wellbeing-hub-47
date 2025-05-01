@@ -1,9 +1,10 @@
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { AuthProvider, useAuth } from "./contexts/AuthContext";
 
 // Pages
 import Home from "./pages/Home";
@@ -32,37 +33,65 @@ import Contact from "./pages/Contact";
 
 const queryClient = new QueryClient();
 
+// Protected route component
+interface ProtectedRouteProps {
+  element: React.ReactElement;
+  requiredRole?: "admin" | "doctor" | "patient" | null;
+}
+
+const ProtectedRoute = ({ element, requiredRole }: ProtectedRouteProps) => {
+  const { isAuthenticated, user } = useAuth();
+
+  if (!isAuthenticated) {
+    return <Navigate to="/login" />;
+  }
+
+  // If a specific role is required and user doesn't have it
+  if (requiredRole && user?.role !== requiredRole) {
+    return <Navigate to="/dashboard" />;
+  }
+
+  return element;
+};
+
+// App component now uses BrowserRouter outside of AuthProvider
+const AppWithAuth = () => (
+  <Routes>
+    <Route path="/" element={<Home />} />
+    <Route path="/disease-predictor" element={<DiseasePredictor />} />
+    <Route path="/signup" element={<SignUp />} />
+    <Route path="/login" element={<Login />} />
+    <Route path="/profile" element={<ProtectedRoute element={<Profile />} />} />
+    <Route path="/dashboard" element={<ProtectedRoute element={<Dashboard />} />} />
+    <Route path="/doctor-panel" element={<ProtectedRoute element={<DoctorPanel />} requiredRole="doctor" />} />
+    <Route path="/health-records" element={<ProtectedRoute element={<HealthRecords />} />} />
+    <Route path="/admin" element={<ProtectedRoute element={<AdminPanel />} requiredRole="admin" />} />
+    <Route path="/fitness-trainer" element={<ProtectedRoute element={<FitnessTrainer />} />} />
+    <Route path="/gym-training" element={<ProtectedRoute element={<GymTraining />} />} />
+    <Route path="/risk-planner" element={<ProtectedRoute element={<RiskPlanner />} />} />
+    <Route path="/account" element={<ProtectedRoute element={<AccountManager />} />} />
+    <Route path="/risk" element={<ProtectedRoute element={<Risk />} />} />
+    <Route path="/trainer" element={<ProtectedRoute element={<Trainer />} />} />
+    <Route path="/diet" element={<ProtectedRoute element={<Diet />} />} />
+    <Route path="/chat" element={<ProtectedRoute element={<Chat />} />} />
+    <Route path="/ocr" element={<ProtectedRoute element={<Ocr />} />} />
+    <Route path="/about" element={<About />} />
+    <Route path="/privacy" element={<Privacy />} />
+    <Route path="/terms" element={<Terms />} />
+    <Route path="/contact" element={<Contact />} />
+    <Route path="*" element={<NotFound />} />
+  </Routes>
+);
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
       <Toaster />
       <Sonner />
       <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/disease-predictor" element={<DiseasePredictor />} />
-          <Route path="/signup" element={<SignUp />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/doctor-panel" element={<DoctorPanel />} />
-          <Route path="/health-records" element={<HealthRecords />} />
-          <Route path="/admin" element={<AdminPanel />} />
-          <Route path="/fitness-trainer" element={<FitnessTrainer />} />
-          <Route path="/gym-training" element={<GymTraining />} />
-          <Route path="/risk-planner" element={<RiskPlanner />} />
-          <Route path="/account" element={<AccountManager />} />
-          <Route path="/risk" element={<Risk />} />
-          <Route path="/trainer" element={<Trainer />} />
-          <Route path="/diet" element={<Diet />} />
-          <Route path="/chat" element={<Chat />} />
-          <Route path="/ocr" element={<Ocr />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/privacy" element={<Privacy />} />
-          <Route path="/terms" element={<Terms />} />
-          <Route path="/contact" element={<Contact />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
+        <AuthProvider>
+          <AppWithAuth />
+        </AuthProvider>
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>

@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
@@ -22,16 +23,41 @@ const GoogleButton = ({
     setIsLoading(true);
     
     try {
-      // Simulate API call delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Set up Google OAuth popup
+      const googleAuthUrl = "https://accounts.google.com/o/oauth2/v2/auth";
+      const redirectUri = window.location.origin + "/auth/callback";
       
-      // Mock success case with Google provider
-      const success = await loginWithProvider("google");
+      const params = new URLSearchParams({
+        client_id: "119667269141-6vh6qru5ah380t7m4dptdjac45tg2e4c.apps.googleusercontent.com",
+        redirect_uri: redirectUri,
+        response_type: "code",
+        scope: "email profile",
+        prompt: "select_account",
+        access_type: "offline"
+      });
+
+      // For this demo, we'll use a simulated flow since we can't implement the full OAuth flow in this environment
+      console.log(`Opening Google Auth URL: ${googleAuthUrl}?${params.toString()}`);
       
-      if (success && onSuccess) {
-        const mockToken = "google-mock-token-" + Math.random().toString(36).substring(2);
-        onSuccess(mockToken);
-      }
+      // Simulate a successful authentication for demo purposes
+      setTimeout(async () => {
+        const mockGoogleProfile = {
+          email: "demo.user@gmail.com",
+          name: "Demo User",
+          sub: "google-" + Math.random().toString(36).substring(2)
+        };
+        
+        // Call the loginWithProvider function from AuthContext
+        const success = await loginWithProvider("google", mockGoogleProfile);
+        
+        if (success && onSuccess) {
+          const mockToken = "google-mock-token-" + Math.random().toString(36).substring(2);
+          onSuccess(mockToken);
+        }
+        
+        setIsLoading(false);
+      }, 1000);
+      
     } catch (error) {
       toast({
         title: "Authentication Failed",
@@ -39,7 +65,6 @@ const GoogleButton = ({
         variant: "destructive",
       });
       console.error("Google sign-in error:", error);
-    } finally {
       setIsLoading(false);
     }
   };

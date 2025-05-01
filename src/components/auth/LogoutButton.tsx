@@ -2,6 +2,8 @@
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { LogOut } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+import { useNavigate } from "react-router-dom";
 
 interface LogoutButtonProps {
   className?: string;
@@ -14,10 +16,16 @@ const LogoutButton = ({
   variant = "outline" 
 }: LogoutButtonProps) => {
   const { logout } = useAuth();
+  const { toast } = useToast();
+  const navigate = useNavigate();
 
   const handleLogout = () => {
-    // Call the logout function from AuthContext
     logout();
+    toast({
+      title: "Logged Out",
+      description: "You've been successfully logged out.",
+    });
+    navigate("/login");
   };
 
   return (

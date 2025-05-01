@@ -13,6 +13,13 @@ export interface User {
   name?: string;
   provider?: AuthProvider;
   profileCompleted?: boolean;
+  uid?: string;
+}
+
+interface GoogleProfile {
+  email: string;
+  name: string;
+  sub: string;
 }
 
 interface AuthContextType {
@@ -20,7 +27,7 @@ interface AuthContextType {
   isAuthenticated: boolean;
   login: (email: string, password: string) => Promise<boolean>;
   signUp: (name: string, email: string, password: string) => Promise<boolean>;
-  loginWithProvider: (provider: "google" | "microsoft") => Promise<boolean>;
+  loginWithProvider: (provider: "google" | "microsoft", profile?: GoogleProfile) => Promise<boolean>;
   logout: () => void;
   updateUser: (userData: Partial<User>) => void;
 }
@@ -73,7 +80,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             role: "admin" as UserRole, 
             name: "Admin User", 
             provider: "email" as AuthProvider,
-            profileCompleted: true
+            profileCompleted: true,
+            uid: `email-${Math.random().toString(36).substring(2)}`
           };
           setUser(adminUser);
           setIsAuthenticated(true);
@@ -92,7 +100,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             role: "doctor" as UserRole, 
             name: "Doctor User", 
             provider: "email" as AuthProvider,
-            profileCompleted: true
+            profileCompleted: true,
+            uid: `email-${Math.random().toString(36).substring(2)}`
           };
           setUser(doctorUser);
           setIsAuthenticated(true);
@@ -112,7 +121,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           email, 
           role: "patient" as UserRole, 
           provider: "email" as AuthProvider,
-          profileCompleted: false  // New users need to complete profile
+          profileCompleted: false,  // New users need to complete profile
+          uid: `email-${Math.random().toString(36).substring(2)}`
         };
         setUser(regularUser);
         setIsAuthenticated(true);
@@ -153,7 +163,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           role: "patient" as UserRole, 
           name, 
           provider: "email" as AuthProvider,
-          profileCompleted: false  // New users need to complete profile
+          profileCompleted: false,  // New users need to complete profile
+          uid: `email-${Math.random().toString(36).substring(2)}`
         };
         setUser(newUser);
         setIsAuthenticated(true);
@@ -185,9 +196,36 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
-  const loginWithProvider = async (provider: "google" | "microsoft"): Promise<boolean> => {
+  const loginWithProvider = async (provider: "google" | "microsoft", profile?: GoogleProfile): Promise<boolean> => {
     try {
-      // In a real app, this would verify the tokens from the providers
+      // For Google auth with provided profile data
+      if (provider === "google" && profile) {
+        const { email, name, sub } = profile;
+        
+        const googleUser = { 
+          email, 
+          role: "patient" as UserRole, 
+          name, 
+          provider: "google" as AuthProvider,
+          profileCompleted: false,  // New users need to complete profile
+          uid: sub
+        };
+        
+        setUser(googleUser);
+        setIsAuthenticated(true);
+        localStorage.setItem("user", JSON.stringify(googleUser));
+        
+        toast({
+          title: "Login Successful",
+          description: `Welcome to HealthHub.ai, ${name}!`,
+        });
+        
+        // Redirect to health form
+        navigate("/health-form");
+        return true;
+      }
+      
+      // Legacy mock implementation for other providers or when profile is not provided
       const providerName = provider === "google" ? "Google" : "Microsoft";
       
       // Create a mock user based on the provider
@@ -199,7 +237,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         role: "patient" as UserRole, 
         name: mockName, 
         provider: provider as AuthProvider,
-        profileCompleted: false  // New users need to complete profile
+        profileCompleted: false,  // New users need to complete profile
+        uid: `${provider}-${Math.random().toString(36).substring(2)}`
       };
       
       setUser(newUser);
@@ -229,10 +268,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setUser(null);
     setIsAuthenticated(false);
     localStorage.removeItem("user");
-    toast({
-      title: "Logged Out",
-      description: "You've been successfully logged out.",
-    });
     navigate("/login");
   };
 

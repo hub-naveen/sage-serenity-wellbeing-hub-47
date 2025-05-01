@@ -9,11 +9,13 @@ interface LogoutButtonProps {
   className?: string;
   variant?: "default" | "destructive" | "outline" | "secondary" | 
              "ghost" | "link" | null | undefined;
+  children?: React.ReactNode;
 }
 
 const LogoutButton = ({ 
   className = "",
-  variant = "outline" 
+  variant = "outline",
+  children 
 }: LogoutButtonProps) => {
   const { logout } = useAuth();
   const { toast } = useToast();
@@ -34,8 +36,12 @@ const LogoutButton = ({
       variant={variant} 
       className={`flex items-center gap-2 ${className}`}
     >
-      <LogOut className="h-4 w-4" />
-      <span>Logout</span>
+      {children || (
+        <>
+          <LogOut className="h-4 w-4" />
+          <span>Logout</span>
+        </>
+      )}
     </Button>
   );
 };

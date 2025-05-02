@@ -25,5 +25,5 @@ export interface AuthContextType {
   signUp: (name: string, email: string, password: string) => Promise<boolean>;
   loginWithProvider: (provider: "google" | "microsoft", profile?: GoogleProfile) => Promise<boolean>;
   logout: () => void;
-  updateUser: (userData: Partial<User>) => void;
+  updateUser: (userData: Partial<User>) => User | undefined;
 }

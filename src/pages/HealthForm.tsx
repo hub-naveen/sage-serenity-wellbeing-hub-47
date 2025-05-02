@@ -14,6 +14,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
 import { ArrowRight, Save } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
 
 const healthFormSchema = z.object({
   height: z.string().min(1, "Height is required"),
@@ -33,6 +34,7 @@ const HealthForm = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
+  const { user, updateUser } = useAuth();
   
   const form = useForm<HealthFormValues>({
     resolver: zodResolver(healthFormSchema),
@@ -50,10 +52,19 @@ const HealthForm = () => {
   });
 
   const onSubmit = (data: HealthFormValues) => {
+    // Update the user profile completed status
+    if (updateUser) {
+      updateUser({ profileCompleted: true });
+    }
+    
     toast({
       title: "Health information saved",
       description: "Your health information has been saved successfully."
     });
+    
+    // Save health data to localStorage as well (in a real app, this would go to a database)
+    localStorage.setItem(`health_data_${user?.uid}`, JSON.stringify(data));
+    
     navigate("/dashboard");
   };
 

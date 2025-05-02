@@ -1,7 +1,7 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { ArrowRight, Calendar, ChevronLeft, ChevronRight, Clock, Loader2, RotateCcw, Utensils } from "lucide-react";
+import { ArrowRight, Calendar, ChevronLeft, ChevronRight, Clock, Loader2, RotateCcw, Utensils, Activity } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -52,7 +52,7 @@ interface MealPlan {
 
 const MealPlanner = () => {
   const [dietary, setDietary] = useState<string[]>([]);
-  const [calories, setCalories] = useState([2000]);
+  const [calories, setCalories] = useState<number[]>([2000]);
   const [preferences, setPreferences] = useState("");
   const [mealPlanType, setMealPlanType] = useState("balanced");
   const [generatedPlan, setGeneratedPlan] = useState<MealPlan | null>(null);
@@ -309,11 +309,13 @@ const MealPlanner = () => {
                         
                         {generatedPlan && (
                           <div className="text-center mt-2">
-                            <Button variant="link" asChild size="sm">
-                              <a className="text-primary">
-                                View Full Week Plan
-                                <ChevronRight className="ml-1 h-4 w-4" />
-                              </a>
+                            <Button 
+                              variant="link" 
+                              size="sm"
+                              onClick={() => document.querySelector('[value="weekly-view"]')?.dispatchEvent(new Event('click'))}
+                            >
+                              View Full Week Plan
+                              <ChevronRight className="ml-1 h-4 w-4" />
                             </Button>
                           </div>
                         )}
@@ -387,7 +389,7 @@ const MealPlanner = () => {
                 </CardHeader>
                 <CardContent className="text-center py-12">
                   <Calendar className="h-12 w-12 mx-auto mb-4 opacity-20" />
-                  <Button onClick={() => document.querySelector('[value="generator"]')?.click()}>
+                  <Button onClick={() => document.querySelector('[value="generator"]')?.dispatchEvent(new Event('click'))}>
                     Generate a Meal Plan
                   </Button>
                 </CardContent>

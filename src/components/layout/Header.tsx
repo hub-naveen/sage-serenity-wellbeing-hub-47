@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -14,7 +15,10 @@ import {
   User,
   LogOut,
   Bell,
-  Flame
+  Flame,
+  Thermometer,
+  Calendar,
+  Utensils
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -87,11 +91,11 @@ const Header = ({ isDarkMode, toggleDarkMode }: HeaderProps) => {
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className={`flex items-center space-x-1 ${
-                  isActive('/disease-predictor') || isActive('/risk') || isActive('/risk-planner')
+                  isActive('/disease-predictor') || isActive('/risk') || isActive('/risk-planner') || isActive('/disease-metrics')
                   ? 'bg-primary/10 text-primary'
                   : ''
                 }`}>
-                  <Activity className="mr-1 h-4 w-4" />
+                  <Thermometer className="mr-1 h-4 w-4" />
                   <span>Health Assessment</span>
                 </Button>
               </DropdownMenuTrigger>
@@ -113,6 +117,11 @@ const Header = ({ isDarkMode, toggleDarkMode }: HeaderProps) => {
                     Risk Management Planner
                   </Link>
                 </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to="/disease-metrics" className="w-full cursor-pointer">
+                    Disease Metrics Input
+                  </Link>
+                </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
             
@@ -120,7 +129,8 @@ const Header = ({ isDarkMode, toggleDarkMode }: HeaderProps) => {
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className={`flex items-center space-x-1 ${
-                  isActive('/fitness-trainer') || isActive('/trainer') || isActive('/diet') || isActive('/gym-training')
+                  isActive('/fitness-trainer') || isActive('/trainer') || isActive('/diet') || isActive('/gym-training') || 
+                  isActive('/learn-exercise-ai') || isActive('/meal-planner')
                   ? 'bg-primary/10 text-primary'
                   : ''
                 }`}>
@@ -137,6 +147,12 @@ const Header = ({ isDarkMode, toggleDarkMode }: HeaderProps) => {
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
+                  <Link to="/learn-exercise-ai" className="w-full cursor-pointer">
+                    <Activity className="mr-2 h-4 w-4" />
+                    Learn Exercise with AI
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
                   <Link to="/trainer" className="w-full cursor-pointer">
                     Personalized Workout Plans
                   </Link>
@@ -144,6 +160,12 @@ const Header = ({ isDarkMode, toggleDarkMode }: HeaderProps) => {
                 <DropdownMenuItem asChild>
                   <Link to="/diet" className="w-full cursor-pointer">
                     Diet & Nutrition Planner
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to="/meal-planner" className="w-full cursor-pointer">
+                    <Utensils className="mr-2 h-4 w-4" />
+                    Meal Planner
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
@@ -424,6 +446,12 @@ const Header = ({ isDarkMode, toggleDarkMode }: HeaderProps) => {
               >
                 Risk Management Planner
               </Link>
+              <Link
+                to="/disease-metrics"
+                className="block px-3 py-2 rounded-md hover:bg-primary/10 text-foreground hover:text-primary"
+              >
+                Disease Metrics Input
+              </Link>
             </div>
             
             <div className="py-2 space-y-1">
@@ -433,6 +461,12 @@ const Header = ({ isDarkMode, toggleDarkMode }: HeaderProps) => {
                 className="block px-3 py-2 rounded-md hover:bg-primary/10 text-foreground hover:text-primary"
               >
                 AI Fitness Trainer
+              </Link>
+              <Link
+                to="/learn-exercise-ai"
+                className="block px-3 py-2 rounded-md hover:bg-primary/10 text-foreground hover:text-primary"
+              >
+                Learn Exercise with AI
               </Link>
               <Link
                 to="/trainer"
@@ -445,6 +479,12 @@ const Header = ({ isDarkMode, toggleDarkMode }: HeaderProps) => {
                 className="block px-3 py-2 rounded-md hover:bg-primary/10 text-foreground hover:text-primary"
               >
                 Diet & Nutrition Planner
+              </Link>
+              <Link
+                to="/meal-planner"
+                className="block px-3 py-2 rounded-md hover:bg-primary/10 text-foreground hover:text-primary"
+              >
+                Meal Planner
               </Link>
               <Link
                 to="/gym-training"

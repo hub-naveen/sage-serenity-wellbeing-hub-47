@@ -31,6 +31,9 @@ import Privacy from "./pages/Privacy";
 import Terms from "./pages/Terms";
 import Contact from "./pages/Contact";
 import HealthForm from "./pages/HealthForm";
+import LearnExerciseAI from "./pages/LearnExerciseAI";
+import MealPlanner from "./pages/MealPlanner";
+import DiseaseMetrics from "./pages/DiseaseMetrics";
 
 const queryClient = new QueryClient();
 
@@ -77,6 +80,9 @@ const AppWithAuth = () => (
     <Route path="/chat" element={<ProtectedRoute element={<Chat />} />} />
     <Route path="/ocr" element={<ProtectedRoute element={<Ocr />} />} />
     <Route path="/health-form" element={<ProtectedRoute element={<HealthForm />} />} />
+    <Route path="/learn-exercise-ai" element={<LearnExerciseAI />} />
+    <Route path="/meal-planner" element={<MealPlanner />} />
+    <Route path="/disease-metrics" element={<DiseaseMetrics />} />
     <Route path="/about" element={<About />} />
     <Route path="/privacy" element={<Privacy />} />
     <Route path="/terms" element={<Terms />} />

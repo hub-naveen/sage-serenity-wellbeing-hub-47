@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { motion } from "framer-motion";
 import Layout from "@/components/layout/Layout";
@@ -8,7 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ChevronRight, Activity, Heart, Stethoscope, CircuitBoard, Brain, Lungs, AlertCircle, CheckCircle2, ArrowRight } from "lucide-react";
+import { ChevronRight, Activity, Heart, Stethoscope, CircuitBoard, Brain, AlertCircle, CheckCircle2, ArrowRight } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
@@ -40,7 +39,7 @@ const DISEASE_CATEGORIES = {
   },
   respiratory: {
     name: "Respiratory",
-    icon: <Lungs className="h-6 w-6" />,
+    icon: <Activity className="h-6 w-6" />,
     diseases: [
       { id: "asthma", name: "Asthma", risk: "high", description: "Chronic condition involving airways in the lungs." },
       { id: "copd", name: "COPD", risk: "medium", description: "Group of lung diseases that block airflow and make breathing difficult." },

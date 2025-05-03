@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { ArrowRight, Calendar, ChevronLeft, ChevronRight, Clock, Loader2, RotateCcw, Utensils, Activity } from "lucide-react";
@@ -52,6 +51,7 @@ interface MealPlan {
 
 const MealPlanner = () => {
   const [dietary, setDietary] = useState<string[]>([]);
+  // Fix: explicitly type calories as number array
   const [calories, setCalories] = useState<number[]>([2000]);
   const [preferences, setPreferences] = useState("");
   const [mealPlanType, setMealPlanType] = useState("balanced");

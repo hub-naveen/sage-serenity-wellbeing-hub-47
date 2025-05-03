@@ -5,11 +5,9 @@ import Layout from "@/components/layout/Layout";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
-import { getApiKeys } from "@/lib/env";
 
 const Risk = () => {
   const navigate = useNavigate();
-  const { riskAssessment } = getApiKeys();
 
   useEffect(() => {
     // Redirect to the enhanced risk planner page after a short delay

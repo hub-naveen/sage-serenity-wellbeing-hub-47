@@ -2,6 +2,52 @@
 import { getApiBaseUrl, getApiKeys } from './env';
 
 /**
+ * Type definitions for API responses
+ */
+export interface DashboardSummary {
+  heartRate: {
+    value: number;
+    unit: string;
+    change: number;
+    trendData: number[];
+  };
+  steps: {
+    value: number;
+    change: number;
+    trendData: number[];
+  };
+  calories: {
+    value: number;
+    change: number;
+    trendData: number[];
+  };
+  temperature: {
+    value: number;
+    unit: string;
+    trendData: number[];
+  };
+}
+
+export interface HeartRateDataPoint {
+  name: string;
+  value: number;
+}
+
+export interface ActivityDataPoint {
+  name: string;
+  steps: number;
+  calories: number;
+}
+
+export interface Appointment {
+  id: string;
+  title: string;
+  doctorName: string;
+  dateTime: string;
+  icon: string;
+}
+
+/**
  * API configuration for fitness-related endpoints
  */
 export const fitnessApi = {
@@ -50,7 +96,7 @@ export const riskAssessmentApi = {
 };
 
 // Mock data for dashboard summary
-const mockDashboardSummary = {
+const mockDashboardSummary: DashboardSummary = {
   heartRate: {
     value: 72,
     unit: 'bpm',
@@ -75,7 +121,11 @@ const mockDashboardSummary = {
 };
 
 // Mock data for heart rate
-const mockHeartRateData = {
+const mockHeartRateData: {
+  day: HeartRateDataPoint[];
+  week: HeartRateDataPoint[];
+  month: HeartRateDataPoint[];
+} = {
   day: [
     { name: '6 AM', value: 68 },
     { name: '9 AM', value: 72 },
@@ -103,7 +153,11 @@ const mockHeartRateData = {
 };
 
 // Mock data for activity
-const mockActivityData = {
+const mockActivityData: {
+  day: ActivityDataPoint[];
+  week: ActivityDataPoint[];
+  month: ActivityDataPoint[];
+} = {
   day: [
     { name: '6 AM', steps: 1200, calories: 150 },
     { name: '9 AM', steps: 2500, calories: 320 },
@@ -131,7 +185,7 @@ const mockActivityData = {
 };
 
 // Mock data for appointments
-const mockAppointments = [
+const mockAppointments: Appointment[] = [
   {
     id: '1',
     title: 'Annual Physical Checkup',
@@ -160,7 +214,7 @@ const mockAppointments = [
  * @param userId - Optional user ID for personalized data
  * @returns Dashboard summary data
  */
-export const fetchDashboardSummary = async (userId: string | null) => {
+export const fetchDashboardSummary = async (userId: string | null): Promise<DashboardSummary> => {
   // In a real app, this would fetch data from an API using the userId
   // For this demo, we're returning mock data
   return new Promise((resolve) => {
@@ -174,7 +228,7 @@ export const fetchDashboardSummary = async (userId: string | null) => {
  * @param period - Time period for the data (day, week, month)
  * @returns Heart rate data for the specified period
  */
-export const fetchHeartRateData = async (userId: string | null, period: 'day' | 'week' | 'month') => {
+export const fetchHeartRateData = async (userId: string | null, period: 'day' | 'week' | 'month'): Promise<HeartRateDataPoint[]> => {
   // In a real app, this would fetch data from an API using the userId and period
   // For this demo, we're returning mock data based on the period
   return new Promise((resolve) => {
@@ -188,7 +242,7 @@ export const fetchHeartRateData = async (userId: string | null, period: 'day' | 
  * @param period - Time period for the data (day, week, month)
  * @returns Activity data for the specified period
  */
-export const fetchActivityData = async (userId: string | null, period: 'day' | 'week' | 'month') => {
+export const fetchActivityData = async (userId: string | null, period: 'day' | 'week' | 'month'): Promise<ActivityDataPoint[]> => {
   // In a real app, this would fetch data from an API using the userId and period
   // For this demo, we're returning mock data based on the period
   return new Promise((resolve) => {
@@ -201,7 +255,7 @@ export const fetchActivityData = async (userId: string | null, period: 'day' | '
  * @param userId - Optional user ID for personalized appointments
  * @returns List of upcoming appointments
  */
-export const fetchUpcomingAppointments = async (userId: string | null) => {
+export const fetchUpcomingAppointments = async (userId: string | null): Promise<Appointment[]> => {
   // In a real app, this would fetch data from an API using the userId
   // For this demo, we're returning mock data
   return new Promise((resolve) => {

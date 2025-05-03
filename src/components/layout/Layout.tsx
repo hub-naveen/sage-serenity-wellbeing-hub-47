@@ -40,7 +40,8 @@ const Layout = ({ children }: LayoutProps) => {
   return (
     <div className="flex flex-col min-h-screen overflow-hidden">
       <Header isDarkMode={isDarkMode} toggleDarkMode={toggleDarkMode} />
-      <AnimatePresence mode="wait">
+      {/* Fix: Remove the 'mode' prop as it's not supported in this version of framer-motion */}
+      <AnimatePresence>
         <motion.main 
           className="flex-grow"
           initial={{ opacity: 0, y: 20 }}
